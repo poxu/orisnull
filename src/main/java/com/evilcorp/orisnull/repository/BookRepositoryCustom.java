@@ -10,6 +10,12 @@ public interface BookRepositoryCustom {
 
     List<Book> findByFilterJpqlWithHelper(BookFilter filter);
 
+    List<Book> findByFilterNative(BookFilter filter);
+
+    List<Book> findByFilterNativeOrIsNull(BookFilter filter);
+
+    List<Book> findByFilterNativeWithCrazyHelper(BookFilter filter);
+
     List<Book> findByFilterJpqlTypical(BookFilter filter);
 
     List<Book> findByFilterJpqlNaive(BookFilter filter);

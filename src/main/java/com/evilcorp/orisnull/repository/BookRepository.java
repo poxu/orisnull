@@ -1,9 +1,11 @@
 package com.evilcorp.orisnull.repository;
 
 import com.evilcorp.orisnull.entity.Book;
+import com.evilcorp.orisnull.entity.Book_;
 import com.evilcorp.orisnull.filter.BookFilter;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,42 +25,43 @@ import java.util.stream.Stream;
 
 @Transactional(readOnly = true)
 public interface BookRepository extends JpaRepository<Book, UUID>, BookRepositoryCustom {
-    @Query(
-            " select b from Book b where" +
-                    " 1=1" +
-                    " and (b.author = :#{#filter.author}   or :#{#filter.author} is null)" +
-                    " and (b.rating = :#{#filter.rating}   or :#{#filter.rating} is null)" +
-                    " and (b.country = :#{#filter.country} or :#{#filter.country} is null)" +
-                    " and (b.name = :#{#filter.name}       or :#{#filter.name} is null)"
+    @Query("" +
+            " select b from Book b where                                           " +
+            " 1=1                                                                  " +
+            " and (b.author = :#{#filter.author}   or :#{#filter.author} is null)  " +
+            " and (b.rating = :#{#filter.rating}   or :#{#filter.rating} is null)  " +
+            " and (b.country = :#{#filter.country} or :#{#filter.country} is null) " +
+            " and (b.name = :#{#filter.name}       or :#{#filter.name} is null)    "
     )
-    List<Book> findByFilter(@Param("filter") BookFilter filter);
+    List<Book> findByFilterOrIsNull(@Param("filter") BookFilter filter);
 
-    @Query(
-            " select b from Book b where" +
-                    " 1=1" +
-                    " and (b.author = :#{#filter.author}   or :#{#filter.author} is null)" +
-                    " and (b.rating = :#{#filter.rating}   or :#{#filter.rating} is null)" +
-                    " and (b.country = :#{#filter.country} or :#{#filter.country} is null)" +
-                    " and (b.name = :#{#filter.name}       or :#{#filter.name} is null)" +
-                    " and (   " +
-                    "          :#{#filter.author} is not null" +
-                    "       or :#{#filter.rating} is not null" +
-                    "       or :#{#filter.country} is not null" +
-                    "       or :#{#filter.name} is not null" +
-                    " ) "
+    @Query("" +
+            " select b from Book b where                                           " +
+            " 1=1                                                                  " +
+            " and (b.author = :#{#filter.author}   or :#{#filter.author} is null)  " +
+            " and (b.rating = :#{#filter.rating}   or :#{#filter.rating} is null)  " +
+            " and (b.country = :#{#filter.country} or :#{#filter.country} is null) " +
+            " and (b.name = :#{#filter.name}       or :#{#filter.name} is null)    " +
+            " and (                                                                " +
+            "          :#{#filter.author} is not null                              " +
+            "       or :#{#filter.rating} is not null                              " +
+            "       or :#{#filter.country} is not null                             " +
+            "       or :#{#filter.name} is not null                                " +
+            " )                                                                    "
     )
-    List<Book> findByFilterFixed(@Param("filter") BookFilter filter);
+    List<Book> findByFilterOrIsNullFixed(@Param("filter") BookFilter filter);
 
-    @Query(
-            " select b from Book b where" +
-                    " 1=1 " +
-                    " and (b.author = :#{#filter.author}   or :#{#filter.author == null} = true)" +
-                    " and (b.rating = :#{#filter.rating}   or :#{#filter.rating == null} = true)" +
-                    " and (b.country = :#{#filter.country} or :#{#filter.country == null} = true)" +
-                    " and (b.name = :#{#filter.name}       or :#{#filter.name == null} = true)"
+    @Query("" +
+            " select b from Book b where                                                    " +
+            "        1=1                                                                    " +
+            "   and (b.author = :#{#filter.author}   or :#{#filter.author == null} = true)  " +
+            "   and (b.rating = :#{#filter.rating}   or :#{#filter.rating == null} = true)  " +
+            "   and (b.country = :#{#filter.country} or :#{#filter.country == null} = true) " +
+            "   and (b.name = :#{#filter.name}       or :#{#filter.name == null} = true)    "
     )
-    List<Book> findByFilterFast(@Param("filter") BookFilter filter);
+    List<Book> findByFilterOrIsNullIncorrectlyFixed(@Param("filter") BookFilter filter);
 
+    @EntityGraph
     default List<Book> findByFilterExample(BookFilter filter) {
         if (filter.isEmpty()) {
             return Collections.emptyList();
@@ -87,10 +90,10 @@ public interface BookRepository extends JpaRepository<Book, UUID>, BookRepositor
             public Predicate toPredicate(Root<Book> root, CriteriaQuery<?> query,
                                          CriteriaBuilder builder) {
                 return builder.and(Stream.of(
-                        with(filter::getAuthor,  a -> builder.equal(root.get("author"),  a)),
-                        with(filter::getName,    a -> builder.equal(root.get("name"),    a)),
-                        with(filter::getCountry, a -> builder.equal(root.get("country"), a)),
-                        with(filter::getRating,  a -> builder.equal(root.get("rating"),  a))
+                        with(filter::getAuthor, a -> builder.equal(root.get(Book_.author), a)),
+                        with(filter::getName, a -> builder.equal(root.get(Book_.name), a)),
+                        with(filter::getCountry, a -> builder.equal(root.get(Book_.country), a)),
+                        with(filter::getRating, a -> builder.equal(root.get(Book_.rating), a))
                 ).filter(Objects::nonNull).toArray(Predicate[]::new));
             }
         };

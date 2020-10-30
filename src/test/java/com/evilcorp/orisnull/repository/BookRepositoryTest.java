@@ -44,13 +44,13 @@ class BookRepositoryTest {
     class QueryAnnotationTest {
         @Test
         void nonExistingFilter() {
-            final var all = bookRepository.findByFilter(book().build());
+            final var all = bookRepository.findByFilterOrIsNull(book().build());
             assertEquals(5, all.size());
         }
 
         @Test
         void existingFilter() {
-            final var pelevin = bookRepository.findByFilter(book().author("Pelevin").build());
+            final var pelevin = bookRepository.findByFilterOrIsNull(book().author("Pelevin").build());
             assertEquals(2, pelevin.size());
         }
     }
@@ -59,13 +59,13 @@ class BookRepositoryTest {
     class AlternativeQueryAnnotationTest {
         @Test
         void nonExistingFilter() {
-            final var all = bookRepository.findByFilterFast(book().build());
+            final var all = bookRepository.findByFilterOrIsNullIncorrectlyFixed(book().build());
             assertEquals(5, all.size());
         }
 
         @Test
         void existingFilter() {
-            final var pelevin = bookRepository.findByFilterFast(book().author("Pelevin").build());
+            final var pelevin = bookRepository.findByFilterOrIsNullIncorrectlyFixed(book().author("Pelevin").build());
             assertEquals(2, pelevin.size());
         }
     }
@@ -74,13 +74,13 @@ class BookRepositoryTest {
     class FixedQueryAnnotationTest {
         @Test
         void nonExistingFilter() {
-            final var all = bookRepository.findByFilterFixed(book().build());
+            final var all = bookRepository.findByFilterOrIsNullFixed(book().build());
             assertEquals(0, all.size());
         }
 
         @Test
         void existingFilter() {
-            final var pelevin = bookRepository.findByFilterFixed(book().author("Pelevin").build());
+            final var pelevin = bookRepository.findByFilterOrIsNullFixed(book().author("Pelevin").build());
             assertEquals(2, pelevin.size());
         }
     }
@@ -96,6 +96,60 @@ class BookRepositoryTest {
         @Test
         void existingFilter() {
             final var pelevin = bookRepository.findByFilterJpql(book()
+                    .author("Pelevin")
+                    .rating(5)
+                    .build());
+            assertEquals(1, pelevin.size());
+        }
+    }
+
+    @Nested
+    class NativeTest {
+        @Test
+        void nonExistingFilter() {
+            final var pelevin = bookRepository.findByFilterNative(book().build());
+            assertEquals(0, pelevin.size());
+        }
+
+        @Test
+        void existingFilter() {
+            final var pelevin = bookRepository.findByFilterNative(book()
+                    .author("Pelevin")
+                    .rating(5)
+                    .build());
+            assertEquals(1, pelevin.size());
+        }
+    }
+
+    @Nested
+    class OrIsNullNativeTest {
+        @Test
+        void nonExistingFilter() {
+            final var pelevin = bookRepository.findByFilterNativeOrIsNull(book().build());
+            assertEquals(0, pelevin.size());
+        }
+
+        @Test
+        void existingFilter() {
+            final var pelevin = bookRepository.findByFilterNativeOrIsNull(book()
+                    .author("Pelevin")
+                    .rating(5)
+                    .build());
+            assertEquals(1, pelevin.size());
+        }
+    }
+
+    @Nested
+    class JpqlWithCrazyHelperTest {
+        @Test
+        void nonExistingFilter() {
+            final var pelevin = bookRepository.findByFilterNativeWithCrazyHelper(book().build());
+            assertEquals(0, pelevin.size());
+        }
+
+        @Test
+        void existingFilter() {
+            final var pelevin = bookRepository.findByFilterNativeWithCrazyHelper(book()
                     .author("Pelevin")
                     .rating(5)
                     .build());

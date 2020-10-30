@@ -21,6 +21,13 @@ public class BookReader {
     @Column(name = "name")
     private String name;
 
+    public BookReader(String name) {
+        this.name = name;
+    }
+
+    public BookReader() {
+    }
+
     public UUID getId() {
         return id;
     }
