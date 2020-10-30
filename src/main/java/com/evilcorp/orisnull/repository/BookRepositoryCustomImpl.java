@@ -146,7 +146,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         if (filter.isEmpty()) {
             return Collections.emptyList();
         }
-        FindBookCrazyHelper absent = new FindBookCrazyHelper(filter);
+        FindBookCrazyHelper orisnull = new FindBookCrazyHelper(filter);
         //@formatter:off
         //language=HQL
         String sql =
@@ -163,7 +163,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         ;
         //@formatter:on
         final var em = emf.createEntityManager();
-        final var query = absent.toQuery(em, sql);
+        final var query = orisnull.toQuery(em, sql);
         return query.getResultList();
     }
 
