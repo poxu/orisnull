@@ -54,7 +54,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         }
         FindBookHelper absent = new FindBookHelper(filter);
         //@formatter:off
-        String sql =
+        String sql = "" +
         " select                     " +
         "   b                        " +
         " from                       " +
@@ -84,7 +84,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             return Collections.emptyList();
         }
         //@formatter:off
-        String sql =
+        String sql = "" +
         " select * from books b where " +
         "     1=1                     " + (filter.getAuthor() == null ? "" :
         " and b.author = :author      ") + (filter.getCountry() == null ? "" :
@@ -118,7 +118,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             return Collections.emptyList();
         }
         //@formatter:off
-        String sql =
+        String sql = "" +
         " select                                           " +
         "   *                                              " +
         " from                                             " +
@@ -219,10 +219,10 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         if (filter.getCountry() != null) {
             queryBuilder.append(" and b.country = :country ");
         }
-        if (filter.getName() != null) {
+        if (filter.getRating() != null) {
             queryBuilder.append(" and b.rating = :rating ");
         }
-        if (filter.getRating() != null) {
+        if (filter.getName() != null) {
             queryBuilder.append(" and b.name = :name ");
         }
 
@@ -246,6 +246,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     @Override
     public List<Book> findByFilterJpqlWithConvenientCommenting(BookFilter filter) {
+        if (filter.isEmpty()) {
+            return Collections.emptyList();
+        }
         String sql = " select b from Book b where 1=1  "
                 + (filter.getAuthor() == null ? "" :
                 " "

@@ -52,9 +52,21 @@ public class ReaderRepositoryTest {
 
     @Test
     void findBooksByReaderNameCriteria() {
-        //final var sarahBooks = bookReadRepository.findBooksByReaderName(Collections.singleton("Sarah Connor"));
-        //assertThat(sarahBooks).containsExactlyInAnyOrder(lotr, harryPotter, generationP, solInvictus);
         final var booksByReaderName = bookReadRepository.findBooksByReaderNameCriteriaApi(
+                builder()
+                        .readers(List.of("Sarah connor", "Kyle ReEse"))
+                        .rating(5)
+                        .maxRating(5)
+                        .minRating(4)
+                        .build()
+        );
+        assertThat(booksByReaderName)
+                .containsExactlyInAnyOrder(lotr, harryPotter, generationP);
+    }
+
+    @Test
+    void findBooksByReaderNameNative() {
+        final var booksByReaderName = bookReadRepository.findBooksByReaderNameNative(
                 builder()
                         .readers(List.of("Sarah connor", "Kyle ReEse"))
                         .rating(5)

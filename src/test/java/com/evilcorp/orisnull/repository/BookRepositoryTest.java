@@ -86,6 +86,21 @@ class BookRepositoryTest {
     }
 
     @Nested
+    class TypicalJpqlTest {
+        @Test
+        void nonExistingFilter() {
+            final var all = bookRepository.findByFilterJpqlTypical(book().build());
+            assertEquals(0, all.size());
+        }
+
+        @Test
+        void existingFilter() {
+            final var pelevin = bookRepository.findByFilterJpqlTypical(book().author("Pelevin").build());
+            assertEquals(2, pelevin.size());
+        }
+    }
+
+    @Nested
     class JpqlTest {
         @Test
         void nonExistingFilter() {
@@ -96,6 +111,42 @@ class BookRepositoryTest {
         @Test
         void existingFilter() {
             final var pelevin = bookRepository.findByFilterJpql(book()
+                    .author("Pelevin")
+                    .rating(5)
+                    .build());
+            assertEquals(1, pelevin.size());
+        }
+    }
+
+    @Nested
+    class NaiveJpqlTest {
+        @Test
+        void nonExistingFilter() {
+            final var pelevin = bookRepository.findByFilterJpqlNaive(book().build());
+            assertEquals(0, pelevin.size());
+        }
+
+        @Test
+        void existingFilter() {
+            final var pelevin = bookRepository.findByFilterJpqlNaive(book()
+                    .author("Pelevin")
+                    .rating(5)
+                    .build());
+            assertEquals(1, pelevin.size());
+        }
+    }
+
+    @Nested
+    class ConvenientCommentingTest {
+        @Test
+        void nonExistingFilter() {
+            final var pelevin = bookRepository.findByFilterJpqlWithConvenientCommenting(book().build());
+            assertEquals(0, pelevin.size());
+        }
+
+        @Test
+        void existingFilter() {
+            final var pelevin = bookRepository.findByFilterJpqlWithConvenientCommenting(book()
                     .author("Pelevin")
                     .rating(5)
                     .build());

@@ -116,6 +116,49 @@ public class BookReadRepositoryCustomImpl implements BookReadRepositoryCustom {
 
     @Override
     public List<Book> findBooksByReaderNameNative(BookFilterWithReader filter) {
-        return null;
+        if (filter.isEmpty()) {
+            return Collections.emptyList();
+        }
+        FindBooksWithReaderHelper absent = new FindBooksWithReaderHelper(filter);
+        //@formatter:off
+        String sql = "" +
+        " select                                                           " +
+        "   distinct b.*                                                   " +
+        " from                                                             " +
+        "        books b                                                   " + (absent.readers() ? "" :
+        "   join books_readers bkr on bkr.book_id = b.book_id              " +
+        "   join book_readers br on br.book_reader_id = bkr.book_reader_id ") +
+        " where                                                            " +
+        "       1=1                                                        " + (absent.author() ? "" :
+        "   and b.author = :author                                         ") + (absent.country() ? "" :
+        "   and b.country = :country                                       ") + (absent.minRating() ? "" :
+        "   and b.rating >= :minRating                                     ") + (absent.maxRating() ? "" :
+        "   and b.rating <= :maxRating                                     ") + (absent.name() ? "" :
+        "   and lower(b.name) = lower(:name)                               ") + (absent.readers() ? "" :
+        "   and lower(br.name) in :readers                                 ");
+        //@formatter:on
+        final var em = emf.createEntityManager();
+        final var query = em.createNativeQuery(sql, Book.class);
+
+        if (!absent.author()) {
+            query.setParameter("author", filter.getAuthor());
+        }
+        if (!absent.country()) {
+            query.setParameter("country", filter.getCountry());
+        }
+        if (!absent.name()) {
+            query.setParameter("name", filter.getName());
+        }
+        if (!absent.minRating()) {
+            query.setParameter("minRating", filter.getMinRating());
+        }
+        if (!absent.maxRating()) {
+            query.setParameter("maxRating", filter.getMaxRating());
+        }
+        if (!absent.readers()) {
+            query.setParameter("readers", filter.getReaders()
+                    .stream().map(String::toLowerCase).collect(Collectors.toList()));
+        }
+        return query.getResultList();
     }
 }

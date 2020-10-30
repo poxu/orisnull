@@ -11,7 +11,15 @@ public class BookFilterWithReader {
     private final Integer minRating;
     private final Collection<String> readers;
 
-    public BookFilterWithReader(String name, String country, String author, Integer rating, Integer maxRating, Integer minRating, Collection<String> readers) {
+    public BookFilterWithReader(
+            String name,
+            String country,
+            String author,
+            Integer rating,
+            Integer maxRating,
+            Integer minRating,
+            Collection<String> readers
+    ) {
         this.name = name;
         this.country = country;
         this.author = author;
