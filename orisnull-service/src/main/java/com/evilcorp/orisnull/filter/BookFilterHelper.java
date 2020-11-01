@@ -1,16 +1,17 @@
 package com.evilcorp.orisnull.filter;
 
 import com.evilcorp.orisnull.entity.Book;
+import com.evilcorp.orisnull.filter.BookFilter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class FindBookCrazyHelper {
+public class BookFilterHelper {
     private final BookFilter filter;
 
-    public FindBookCrazyHelper(BookFilter filter) {
+    public BookFilterHelper(BookFilter filter) {
         this.filter = filter;
     }
 
@@ -18,22 +19,14 @@ public class FindBookCrazyHelper {
         return filter.getName() == null;
     }
 
+    public void name(TypedQuery<Book> query, String name) {
+        if (!name()) {
+            query.setParameter(name, filter.getName());
+        }
+    }
+
     public boolean country() {
         return filter.getCountry() == null;
-    }
-
-    public boolean author() {
-        return filter.getAuthor() == null;
-    }
-
-    public boolean rating() {
-        return filter.getRating() == null;
-    }
-
-    public void author(TypedQuery<Book> query, String name) {
-        if (!author()) {
-            query.setParameter(name, filter.getAuthor());
-        }
     }
 
     public void country(TypedQuery<Book> query, String name) {
@@ -42,10 +35,18 @@ public class FindBookCrazyHelper {
         }
     }
 
-    public void name(TypedQuery<Book> query, String name) {
-        if (!name()) {
-            query.setParameter(name, filter.getName());
+    public boolean author() {
+        return filter.getAuthor() == null;
+    }
+
+    public void author(TypedQuery<Book> query, String name) {
+        if (!author()) {
+            query.setParameter(name, filter.getAuthor());
         }
+    }
+
+    public boolean rating() {
+        return filter.getRating() == null;
     }
 
     public void rating(TypedQuery<Book> query, String name) {
@@ -56,12 +57,12 @@ public class FindBookCrazyHelper {
 
     boolean fieldEnabled(String paramName) {
         switch (paramName) {
-            case ":author":
-                return !author();
-            case ":country":
-                return !country();
             case ":name":
                 return !name();
+            case ":country":
+                return !country();
+            case ":author":
+                return !author();
             case ":rating":
                 return !rating();
             default:
@@ -102,11 +103,10 @@ public class FindBookCrazyHelper {
 
         final var jpqlQuery = em.createQuery(result, Book.class);
 
-        author(jpqlQuery, "author");
-        country(jpqlQuery, "country");
         name(jpqlQuery, "name");
+        country(jpqlQuery, "country");
+        author(jpqlQuery, "author");
         rating(jpqlQuery, "rating");
         return jpqlQuery;
     }
-
 }
