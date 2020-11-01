@@ -24,6 +24,7 @@ public class SearchGeneratorTest {
                 "findBooks"
                 , "Bookre"
                 , "com.evilcopr"
+                , "dd"
 
                 );
 

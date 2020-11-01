@@ -10,10 +10,6 @@ public class AnnotatedBetterClass implements BetterClass {
 
     public AnnotatedBetterClass(Element element) {
         this.element = element;
-        System.out.println("element.asType().getKind().getDeclaringClass().getSimpleName() = " + element.asType().getKind().getDeclaringClass().getSimpleName());
-        System.out.println("element.asType() = " + element.asType());
-
-        System.out.println("element = " + element);
         fields = element.getEnclosedElements().stream()
                 .filter(e -> e.getKind().isField())
                 .map(e -> new AnnotatedField(e))

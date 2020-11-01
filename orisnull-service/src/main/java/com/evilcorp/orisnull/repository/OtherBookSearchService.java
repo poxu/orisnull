@@ -8,7 +8,20 @@ import com.evilcorp.orisnull.filter.BookFilter;
 import java.util.List;
 
 @OrIsNullRepository
-public interface BookSearchService {
+public interface OtherBookSearchService {
+    //language=HQL
+    public static String QUERY = "" +
+            " select                           " + "\n" +
+            "   b                              " + "\n" +
+            " from                             " + "\n" +
+            "   Book b                         " + "\n" +
+            " where                            " + "\n" +
+            "       1=1                        " + "\n" +
+            "   and b.author = :author   -- op " + "\n" +
+            "   and b.country = :country -- op " + "\n" +
+            "   and b.rating = :rating   -- op " + "\n" +
+            "   and b.name = :name       -- op ";
+
     //language=HQL
     @OrIsNullQuery(value = "" +
             " select                           " + "\n" +

@@ -28,14 +28,24 @@ public class SearchGenerator {
     private final String methodName;
     private final String className;
     private final String packageName;
+    private final String query;
 
-    public SearchGenerator(BetterClass filter, BetterClass entity, BetterClass iface, String methodName, String className, String packageName) {
+    public SearchGenerator(
+            BetterClass filter
+            , BetterClass entity
+            , BetterClass iface
+            , String methodName
+            , String className
+            , String packageName
+            , String query
+    ) {
         this.filter = filter;
         this.entity = entity;
         this.iface = iface;
         this.methodName = methodName;
         this.className = className;
         this.packageName = packageName;
+        this.query = query;
     }
 
     public void toFile(File file) {
@@ -165,6 +175,9 @@ public class SearchGenerator {
         spec.addField(FieldSpec.builder(ClassName.get("javax.persistence", "EntityManagerFactory"), "emf", Modifier.PRIVATE)
                 .addAnnotation(ClassName.get("org.springframework.beans.factory.annotation", "Autowired"))
                 .build());
+        spec.addField(FieldSpec.builder(ClassName.get(String.class), "query")
+                .initializer("$S", query)
+                .build());
         //ClassName iface = ClassName.get()
         ClassName entityName = ClassName.get(entity.packageName(), entity.shortName());
         ClassName list = ClassName.get("java.util", "List");
@@ -179,7 +192,7 @@ public class SearchGenerator {
                 .addStatement("return $T.emptyList()", Collections.class)
                 .endControlFlow()
                 .addStatement("$1L orisnull = new $1L(filter)", filter.shortName() + "Helper" )
-                .addStatement("String sql = $T.QUERY", ClassName.get(iface.packageName(), iface.shortName()))
+                .addStatement("String sql = this.query")
                 .addStatement("final var em = emf.createEntityManager()")
                 .addStatement("final var query = orisnull.toQuery(em, sql)")
                 .addStatement("return query.getResultList()")

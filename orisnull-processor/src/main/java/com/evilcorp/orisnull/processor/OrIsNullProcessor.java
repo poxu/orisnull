@@ -1,5 +1,6 @@
 package com.evilcorp.orisnull.processor;
 
+import com.evilcorp.orisnull.annotation.OrIsNullQuery;
 import com.evilcorp.orisnull.generator.SearchGenerator;
 import com.evilcorp.orisnull.model.AnnotatedBetterClass;
 import com.evilcorp.orisnull.model.BetterClass;
@@ -76,6 +77,11 @@ public class OrIsNullProcessor extends AbstractProcessor {
                     continue;
                 }
                 final var methodSimpleName = method.getSimpleName().toString();
+                final var query = method.getAnnotation(OrIsNullQuery.class);
+                if (query == null) {
+                   continue;
+                }
+                printWriter.println(query.value());
 
                 final TypeMirror paratemeter = typeMirror.getParameterTypes().iterator().next();
                 BetterClass filter = new AnnotatedBetterClass(processingEnv.getTypeUtils().asElement(paratemeter));
@@ -102,7 +108,8 @@ public class OrIsNullProcessor extends AbstractProcessor {
                         iface,
                         methodSimpleName,
                         iface.shortName(),
-                        iface.packageName()
+                        iface.packageName(),
+                        query.value()
                 );
                 searchGenerator.toFile(new File("/home/riptor/tmp/"));
                 searchGenerator.toFiler(processingEnv.getFiler());
