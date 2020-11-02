@@ -1,9 +1,10 @@
 package com.evilcorp.orisnull.processor;
 
 import com.evilcorp.orisnull.annotation.OrIsNullQuery;
-import com.evilcorp.orisnull.generator.SearchGenerator;
+import com.evilcorp.orisnull.generator.SearchMethodGenerator;
 import com.evilcorp.orisnull.model.AnnotatedBetterClass;
 import com.evilcorp.orisnull.model.BetterClass;
+import com.evilcorp.orisnull.model.SearchMethod;
 import com.evilcorp.orisnull.model.SimpleBetterClass;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -14,8 +15,6 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
@@ -26,7 +25,6 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @SupportedAnnotationTypes({"com.evilcorp.orisnull.annotation.OrIsNullRepository"})
@@ -102,14 +100,14 @@ public class OrIsNullProcessor extends AbstractProcessor {
                 final var book = returnTypeName.replaceAll("^.*<(.*)>", "$1");
                 printWriter.println(book);
                 BetterClass entity = new SimpleBetterClass(book, Collections.emptyList());
-                final var searchGenerator = new SearchGenerator(
-                        filter,
-                        entity,
+                final var searchGenerator = new SearchMethodGenerator(
                         iface,
-                        methodSimpleName,
-                        iface.shortName(),
-                        iface.packageName(),
-                        query.value()
+                        new SearchMethod(
+                                filter,
+                                entity,
+                                methodSimpleName,
+                                query.value()
+                        )
                 );
                 searchGenerator.toFile(new File("/home/riptor/tmp/"));
                 searchGenerator.toFiler(processingEnv.getFiler());
