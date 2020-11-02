@@ -175,9 +175,6 @@ public class SearchGenerator {
         spec.addField(FieldSpec.builder(ClassName.get("javax.persistence", "EntityManagerFactory"), "emf", Modifier.PRIVATE)
                 .addAnnotation(ClassName.get("org.springframework.beans.factory.annotation", "Autowired"))
                 .build());
-        spec.addField(FieldSpec.builder(ClassName.get(String.class), "query")
-                .initializer("$S", query)
-                .build());
         //ClassName iface = ClassName.get()
         ClassName entityName = ClassName.get(entity.packageName(), entity.shortName());
         ClassName list = ClassName.get("java.util", "List");
@@ -192,7 +189,7 @@ public class SearchGenerator {
                 .addStatement("return $T.emptyList()", Collections.class)
                 .endControlFlow()
                 .addStatement("$1L orisnull = new $1L(filter)", filter.shortName() + "Helper" )
-                .addStatement("String sql = this.query")
+                .addStatement("String sql = $S", query)
                 .addStatement("final var em = emf.createEntityManager()")
                 .addStatement("final var query = orisnull.toQuery(em, sql)")
                 .addStatement("return query.getResultList()")
