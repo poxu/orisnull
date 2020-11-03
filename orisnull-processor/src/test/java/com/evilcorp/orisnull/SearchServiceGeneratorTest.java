@@ -1,6 +1,6 @@
 package com.evilcorp.orisnull;
 
-import com.evilcorp.orisnull.generator.SearchMethodGenerator;
+import com.evilcorp.orisnull.generator.SearchServiceGenerator;
 import com.evilcorp.orisnull.model.SearchMethod;
 import com.evilcorp.orisnull.model.SimpleBetterClass;
 import com.evilcorp.orisnull.model.SimpleField;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
-public class SearchMethodGeneratorTest {
+public class SearchServiceGeneratorTest {
     @Test
     void generate() {
         final var filter = new SimpleBetterClass("entities.TestFilter",
@@ -18,7 +18,7 @@ public class SearchMethodGeneratorTest {
                 )
         );
         final var entity = new SimpleBetterClass("entities.Book", Collections.emptyList());
-        SearchMethodGenerator searchMethodGenerator = new SearchMethodGenerator(
+        SearchServiceGenerator searchServiceGenerator = new SearchServiceGenerator(
                 filter,
                 new SearchMethod(
                         filter,
@@ -28,6 +28,6 @@ public class SearchMethodGeneratorTest {
                 )
         );
 
-        System.out.println(searchMethodGenerator.body());
+        System.out.println(searchServiceGenerator.body());
     }
 }
