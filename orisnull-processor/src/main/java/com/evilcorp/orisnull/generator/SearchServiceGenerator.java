@@ -5,7 +5,6 @@ import com.evilcorp.orisnull.model.SearchMethod;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.Filer;
@@ -46,15 +45,6 @@ public class SearchServiceGenerator {
         return builder.toString();
     }
 
-    public TypeSpec filterWrapper() {
-        FilterWrapperGenerator generator = new FilterWrapperGenerator(
-                method.filter(),
-                method.entity()
-        );
-
-        return generator.generateWrapper();
-    }
-
     public JavaFile file() {
         final var spec = TypeSpec.classBuilder(orIsNullSearchInterface.shortName() + "Impl");
         spec.addModifiers(Modifier.PUBLIC);
@@ -64,11 +54,15 @@ public class SearchServiceGenerator {
                 .addAnnotation(ClassName.get("org.springframework.beans.factory.annotation", "Autowired"))
                 .build());
 
-        final MethodSpec mainMethod = new SearchMethodGenerator(method).searchQueryMethod();
+        final var searchMethodGenerator = new SearchMethodGenerator(method);
+        spec.addMethod(searchMethodGenerator.searchQueryMethod());
 
-        spec.addMethod(mainMethod);
+        final var generator = new FilterWrapperGenerator(
+                method.filter(),
+                method.entity()
+        );
+        spec.addType(generator.generateWrapper());
 
-        spec.addType(filterWrapper());
         JavaFile javaFile = JavaFile.builder(orIsNullSearchInterface.packageName(), spec.build())
                 .build();
 
