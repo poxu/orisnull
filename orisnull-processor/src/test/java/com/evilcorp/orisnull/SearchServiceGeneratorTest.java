@@ -20,11 +20,13 @@ public class SearchServiceGeneratorTest {
         final var entity = new SimpleBetterClass("entities.Book", Collections.emptyList());
         SearchServiceGenerator searchServiceGenerator = new SearchServiceGenerator(
                 filter,
+                List.of(
                 new SearchMethod(
                         filter,
                         entity,
                         "findBooks",
                         "bookre"
+                )
                 )
         );
 

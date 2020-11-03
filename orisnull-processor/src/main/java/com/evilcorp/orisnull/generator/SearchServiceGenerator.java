@@ -11,18 +11,21 @@ import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SearchServiceGenerator {
 
     private final BetterClass orIsNullSearchInterface;
-    private final SearchMethod method;
+    private final List<SearchMethod> methods;
 
     public SearchServiceGenerator(
              BetterClass orIsNullSearchInterface
-            , SearchMethod method
+            , List<SearchMethod> methods
     ) {
         this.orIsNullSearchInterface = orIsNullSearchInterface;
-        this.method = method;
+        this.methods = methods;
     }
 
     public void toFile(File file) {
@@ -54,14 +57,22 @@ public class SearchServiceGenerator {
                 .addAnnotation(ClassName.get("org.springframework.beans.factory.annotation", "Autowired"))
                 .build());
 
-        final var searchMethodGenerator = new SearchMethodGenerator(method);
-        spec.addMethod(searchMethodGenerator.searchQueryMethod());
+        Map<String, TypeSpec> wrappers = new HashMap<>();
 
-        final var generator = new FilterWrapperGenerator(
-                method.filter(),
-                method.entity()
-        );
-        spec.addType(generator.generateWrapper());
+        for (SearchMethod method : methods) {
+            final var searchMethodGenerator = new SearchMethodGenerator(method);
+            spec.addMethod(searchMethodGenerator.searchQueryMethod());
+
+            if (!wrappers.containsKey(method.filter().name())) {
+                final var generator = new FilterWrapperGenerator(
+                        method.filter(),
+                        method.entity()
+                );
+                final var wrapper = generator.generateWrapper();
+                wrappers.put(method.filter().name(), wrapper);
+                spec.addType(wrapper);
+            }
+        }
 
         JavaFile javaFile = JavaFile.builder(orIsNullSearchInterface.packageName(), spec.build())
                 .build();

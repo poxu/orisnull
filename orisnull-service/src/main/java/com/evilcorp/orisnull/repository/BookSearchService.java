@@ -23,4 +23,19 @@ public interface BookSearchService {
             "   and b.name = :name       -- op "
     )
     List<Book> findBooks(BookFilter filter);
+
+    //language=HQL
+    @OrIsNullQuery(value = "" +
+            " select                           " + "\n" +
+            "   b                              " + "\n" +
+            " from                             " + "\n" +
+            "   Book b                         " + "\n" +
+            " where                            " + "\n" +
+            "       1=1                        " + "\n" +
+            "   and b.author = :author   -- op " + "\n" +
+            "   and b.country = :country -- op " + "\n" +
+            "   and b.rating = :rating   -- op " + "\n" +
+            "   and b.name = :name       -- op "
+    )
+    List<Book> findAllBooks(BookFilter filter);
 }

@@ -36,4 +36,5 @@ public interface OtherBookSearchService {
             "   and b.name = :name       -- op "
     )
     List<Book> findBooks(BookFilter filter);
+
 }

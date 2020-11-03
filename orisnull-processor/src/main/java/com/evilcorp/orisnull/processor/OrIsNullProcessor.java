@@ -22,6 +22,7 @@ import javax.lang.model.util.Types;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -61,56 +62,56 @@ public class OrIsNullProcessor extends AbstractProcessor {
                         .filter(e -> e.getKind() == ElementKind.METHOD)
                         .collect(Collectors.toList());
                 printWriter.println("forund methods " + collect.size());
-                if (collect.size() != 1) {
-                    continue;
-                }
                 BetterClass iface = new AnnotatedBetterClass(annotatedElement);
 
-                Element method = collect.iterator().next();
-                printWriter.println(method.toString());
-                printWriter.println(method.getEnclosedElements().size());
-                printWriter.println(method.getKind());
-                final var typeMirror = (ExecutableType) method.asType();
-                if (typeMirror.getParameterTypes().size() != 1) {
-                    continue;
+                //Element method = collect.iterator().next();
+                List<SearchMethod> methods = new ArrayList<>();
+
+                for (Element method : collect) {
+
+                    printWriter.println(method.toString());
+                    printWriter.println(method.getEnclosedElements().size());
+                    printWriter.println(method.getKind());
+
+                    final var typeMirror = (ExecutableType) method.asType();
+                    if (typeMirror.getParameterTypes().size() != 1) {
+                        continue;
+                    }
+                    final var methodSimpleName = method.getSimpleName().toString();
+                    final var query = method.getAnnotation(OrIsNullQuery.class);
+
+                    if (query == null) {
+                        continue;
+                    }
+                    printWriter.println(query.value());
+
+                    final TypeMirror paratemeter = typeMirror.getParameterTypes().iterator().next();
+                    BetterClass filter = new AnnotatedBetterClass(processingEnv.getTypeUtils().asElement(paratemeter));
+
+                    filter.fields().forEach(f -> {
+                        printWriter.println(f.name());
+                        printWriter.println(f.type());
+                    });
+
+                    printWriter.println(typeMirror.getReturnType());
+
+                    final var returnTypeName = typeMirror.getReturnType().toString();
+
+                    if (!returnTypeName.startsWith("java.util.List")) {
+                        continue;
+                    }
+
+                    final var book = returnTypeName.replaceAll("^.*<(.*)>", "$1");
+                    printWriter.println(book);
+                    BetterClass entity = new SimpleBetterClass(book, Collections.emptyList());
+
+                    methods.add(new SearchMethod(
+                            filter,
+                            entity,
+                            methodSimpleName,
+                            query.value()
+                    ));
                 }
-                final var methodSimpleName = method.getSimpleName().toString();
-                final var query = method.getAnnotation(OrIsNullQuery.class);
-                if (query == null) {
-                   continue;
-                }
-                printWriter.println(query.value());
-
-                final TypeMirror paratemeter = typeMirror.getParameterTypes().iterator().next();
-                BetterClass filter = new AnnotatedBetterClass(processingEnv.getTypeUtils().asElement(paratemeter));
-
-                filter.fields().forEach(f -> {
-                    printWriter.println(f.name());
-                    printWriter.println(f.type());
-                });
-
-                printWriter.println(typeMirror.getReturnType());
-
-               final var returnTypeName = typeMirror.getReturnType().toString();
-
-                if (!returnTypeName.startsWith("java.util.List")) {
-                    continue;
-                }
-
-                final var book = returnTypeName.replaceAll("^.*<(.*)>", "$1");
-                printWriter.println(book);
-                BetterClass entity = new SimpleBetterClass(book, Collections.emptyList());
-                final var searchGenerator = new SearchServiceGenerator(
-                        iface,
-                        new SearchMethod(
-                                filter,
-                                entity,
-                                methodSimpleName,
-                                query.value()
-                        )
-                );
-                searchGenerator.toFile(new File("/home/riptor/tmp/"));
-                searchGenerator.toFiler(processingEnv.getFiler());
 
 
                 /*
@@ -131,6 +132,12 @@ public class OrIsNullProcessor extends AbstractProcessor {
                 */
                 //annotatedElement.
                 //processingEnv.getFiler();
+                final var searchGenerator = new SearchServiceGenerator(
+                        iface,
+                        methods
+                );
+                searchGenerator.toFile(new File("/home/riptor/tmp/"));
+                searchGenerator.toFiler(processingEnv.getFiler());
             }
         }
         printWriter.close();
