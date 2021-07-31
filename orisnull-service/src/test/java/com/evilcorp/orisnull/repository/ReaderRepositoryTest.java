@@ -75,7 +75,7 @@ public class ReaderRepositoryTest {
                         .build()
         );
         assertThat(booksByReaderName)
-                .containsExactlyInAnyOrder(lotr, harryPotter, generationP);
+                .containsExactlyInAnyOrder(lotr, harryPotter, generationP, solInvictus);
     }
 
     @BeforeAll

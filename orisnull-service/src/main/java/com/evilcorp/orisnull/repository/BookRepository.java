@@ -61,6 +61,8 @@ public interface BookRepository extends JpaRepository<Book, UUID>, BookRepositor
     )
     List<Book> findByFilterOrIsNullIncorrectlyFixed(@Param("filter") BookFilter filter);
 
+    boolean existsByName(String name);
+
     @EntityGraph
     default List<Book> findByFilterExample(BookFilter filter) {
         if (filter.isEmpty()) {

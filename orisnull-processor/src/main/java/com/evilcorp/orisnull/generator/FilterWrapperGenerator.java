@@ -1,6 +1,6 @@
 package com.evilcorp.orisnull.generator;
 
-import com.evilcorp.orisnull.domain.BetterQuery;
+import com.evilcorp.orisnull.domain.BetterQueryWithHints;
 import com.evilcorp.orisnull.domain.QueryParams;
 import com.evilcorp.orisnull.model.BetterClass;
 import com.evilcorp.orisnull.model.Field;
@@ -13,6 +13,8 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FilterWrapperGenerator {
     private final BetterClass filter;
@@ -114,16 +116,34 @@ public class FilterWrapperGenerator {
                 .addSuperinterface(ClassName.get(QueryParams.class))
                 ;
         helper.addField(filterName, "filter", Modifier.PRIVATE);
-        helper.addField(ClassName.get(BetterQuery.class), "params", Modifier.PRIVATE, Modifier.FINAL);
+        helper.addField(ClassName.get(BetterQueryWithHints.class), "params", Modifier.PRIVATE, Modifier.FINAL);
         helper.addMethod(MethodSpec.constructorBuilder()
                 .addParameter(filterName, "filter")
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement(CodeBlock.builder()
                         .add("this.filter = filter")
                         .build())
-                .addStatement("this.params = new BetterQuery(this)")
+                .addStatement("this.params = new BetterQueryWithHints(this)")
                 .build());
         return helper;
+    }
+
+    public MethodSpec fields(List<Field> fields) {
+        final String allFields = fields.stream()
+                .map(f -> f.name())
+                .map(f -> "\"" + f + "\"")
+                .collect(Collectors.joining(","));
+
+        ClassName stringClass = ClassName.get(String.class);
+        ClassName listClass = ClassName.get("java.util", "List");
+        TypeName returnTypeClass = ParameterizedTypeName.get(listClass, stringClass);
+
+        final var methodSpec = MethodSpec.methodBuilder("fields")
+                .returns(returnTypeClass)
+                .addModifiers(Modifier.PUBLIC)
+                .addStatement("return List.of(" + allFields + ")")
+                .build();
+        return methodSpec;
     }
 
     public TypeSpec generateWrapper() {
@@ -140,6 +160,7 @@ public class FilterWrapperGenerator {
         }
         helper.addMethod(this.fieldEnabled());
         helper.addMethod(this.toQuery());
+        helper.addMethod(this.fields(filter.fields()));
         return helper.build();
     }
 

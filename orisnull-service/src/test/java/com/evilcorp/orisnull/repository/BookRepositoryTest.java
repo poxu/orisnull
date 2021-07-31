@@ -8,6 +8,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static com.evilcorp.orisnull.filter.BookFilterBuilder.book;
@@ -242,6 +243,7 @@ class BookRepositoryTest {
     }
 
     @BeforeAll
+//    @PostConstruct
     public void setUp() {
         final var books = List.of(
                 new Book(
@@ -275,6 +277,11 @@ class BookRepositoryTest {
                         "Russia"
                 )
         );
-        bookRepository.saveAll(books);
+        for (Book book : books) {
+            if (!bookRepository.existsByName(book.getName())) {
+                bookRepository.save(book);
+
+            }
+        }
     }
 }

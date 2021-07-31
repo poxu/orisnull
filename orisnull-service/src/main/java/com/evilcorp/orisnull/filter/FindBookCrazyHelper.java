@@ -1,11 +1,13 @@
 package com.evilcorp.orisnull.filter;
 
 import com.evilcorp.orisnull.domain.BetterQuery;
+import com.evilcorp.orisnull.domain.BetterQueryWithHints;
 import com.evilcorp.orisnull.domain.QueryParams;
 import com.evilcorp.orisnull.entity.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class FindBookCrazyHelper implements QueryParams {
     private final BookFilter filter;
@@ -13,7 +15,7 @@ public class FindBookCrazyHelper implements QueryParams {
 
     public FindBookCrazyHelper(BookFilter filter) {
         this.filter = filter;
-        this.params = new BetterQuery(this);
+        this.params = new BetterQueryWithHints(this);
     }
 
     public boolean name() {
@@ -70,6 +72,11 @@ public class FindBookCrazyHelper implements QueryParams {
             default:
                 throw new IllegalArgumentException("Unexpected parameterName " + paramName);
         }
+    }
+
+    @Override
+    public List<String> fields() {
+        return List.of("author", "country", "name", "rating");
     }
 
     public TypedQuery<Book> toQuery(EntityManager em, String query) {
