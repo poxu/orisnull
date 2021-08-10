@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BetterQueryParsingTest {
+class BetterQueryParsingReplaceTest {
     @Test
     void noOpQuery() {
         String query = ""
@@ -27,7 +27,7 @@ class BetterQueryParsingTest {
                 return List.of("name");
             }
         };
-        BetterQuery betterQuery = new BetterQueryParsing(params);
+        BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
         assertEquals(query, cleanedQuery);
@@ -41,7 +41,7 @@ class BetterQueryParsingTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   (1!=1 or b.name = :name) ";
+                + "   ((1!=1) or b.name = :name) ";
 
         String query = ""
                 + " select                              "
@@ -49,7 +49,7 @@ class BetterQueryParsingTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   ((:name is null) or b.name = :name) ";
+                + "   (:name is null or b.name = :name) ";
         QueryParams params = new QueryParams() {
             @Override
             public boolean fieldEnabled(String paramName) {
@@ -62,7 +62,7 @@ class BetterQueryParsingTest {
             }
         };
 
-        BetterQuery betterQuery = new BetterQueryParsing(params);
+        BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
         assertEquals(expected, cleanedQuery);
@@ -76,7 +76,7 @@ class BetterQueryParsingTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   (1=1) ";
+                + "   ((1=1) or b.name = :name) ";
 
         String query = ""
                 + " select                              "
@@ -97,7 +97,7 @@ class BetterQueryParsingTest {
             }
         };
 
-        BetterQuery betterQuery = new BetterQueryParsing(params);
+        BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
         assertEquals(expected, cleanedQuery);
@@ -111,7 +111,8 @@ class BetterQueryParsingTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   (1=1) ";
+                + "   (b.name = :name or (1=1)) "
+                ;
 
         String query = ""
                 + " select                              "
@@ -133,9 +134,10 @@ class BetterQueryParsingTest {
             }
         };
 
-        BetterQuery betterQuery = new BetterQueryParsing(params);
+        BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
+        assertEquals(expected.length(), cleanedQuery.length());
         assertEquals(expected, cleanedQuery);
     }
 
@@ -147,7 +149,7 @@ class BetterQueryParsingTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   (b.name = :name or 1!=1) ";
+                + "   (b.name = :name or (1!=1)) ";
 
         String query = ""
                 + " select                              "
@@ -168,7 +170,7 @@ class BetterQueryParsingTest {
             }
         };
 
-        BetterQuery betterQuery = new BetterQueryParsing(params);
+        BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
         assertEquals(expected, cleanedQuery);
@@ -182,8 +184,8 @@ class BetterQueryParsingTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "       (b.name = :name or 1!=1) "
-                + "   and (b.descr = :descr or 1!=1) "
+                + "       (b.name = :name or (1!=1)) "
+                + "   and (b.descr = :descr or (1!=1)) "
                 ;
 
         String query = ""
@@ -207,7 +209,7 @@ class BetterQueryParsingTest {
             }
         };
 
-        BetterQuery betterQuery = new BetterQueryParsing(params);
+        BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
         assertEquals(expected, cleanedQuery);
@@ -221,8 +223,8 @@ class BetterQueryParsingTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "       (b.name = :name or 1!=1) "
-                + "   and (b.descr = :descr or 1!=1) "
+                + "       (b.name = :name or (1!=1)) "
+                + "   and (b.descr = :descr or (1!=1)) "
                 ;
 
         String query = ""
@@ -246,7 +248,7 @@ class BetterQueryParsingTest {
             }
         };
 
-        BetterQuery betterQuery = new BetterQueryParsing(params);
+        BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
         assertEquals(expected, cleanedQuery);

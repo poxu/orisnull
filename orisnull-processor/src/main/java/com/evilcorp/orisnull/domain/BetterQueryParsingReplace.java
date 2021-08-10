@@ -6,10 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class BetterQueryParsing implements BetterQuery {
+public class BetterQueryParsingReplace implements BetterQuery {
     private final QueryParams params;
 
-    public BetterQueryParsing(QueryParams params) {
+    public BetterQueryParsingReplace(QueryParams params) {
         this.params = params;
     }
 
@@ -22,7 +22,6 @@ public class BetterQueryParsing implements BetterQuery {
             query = removePattern(query, Pattern.compile(":" + paramName + "\\s+is\\s+null\\s+or", Pattern.CASE_INSENSITIVE), false);
         }
 
-
         return query;
     }
 
@@ -30,7 +29,7 @@ public class BetterQueryParsing implements BetterQuery {
         final Matcher matcher = pattern.matcher(query);
         final List<MatchResult> collect = matcher.results().collect(Collectors.toList());
         for (MatchResult matchResult : collect) {
-            System.out.println("f");
+            System.out.println("m");
             query = removeIsNull(query, matchResult, leftOr);
         }
         return query;
@@ -42,38 +41,22 @@ public class BetterQueryParsing implements BetterQuery {
             return query;
         }
 
-        int blockStart = -1;
-        for (int i = orIsNullStart; i >= 0; i--) {
-            if (query.charAt(i) == '(') {
-                blockStart = i;
-                break;
-            }
-        }
-
-        int blockEnd = -1;
-        for (int i = orIsNullStart; i < query.length(); i++) {
-            if (query.charAt(i) == ')') {
-                blockEnd = i;
-                break;
-            }
-        }
-
         final int orIsNullEnd = matchResult.end();
 
         StringBuilder newQuery = new StringBuilder();
+        final String separator;
         if (params.fieldEnabled("name")) {
-            newQuery.append(query.substring(0, orIsNullStart));
-            if (leftOr) {
-                newQuery.append("or 1!=1");
-                newQuery.append(query.substring(blockEnd));
-            } else {
-                newQuery.append("1!=1 or");
-                newQuery.append(query.substring(orIsNullEnd));
-            }
+            separator = "!=";
         } else {
-            newQuery.append(query.substring(0, blockStart + 1));
-            newQuery.append("1=1");
-            newQuery.append(query.substring(blockEnd));
+            separator = "=";
+        }
+        newQuery.append(query.substring(0, orIsNullStart));
+        if (leftOr) {
+            newQuery.append("or (1" + separator + "1)");
+            newQuery.append(query.substring(orIsNullEnd));
+        } else {
+            newQuery.append("(1" + separator + "1) or ");
+            newQuery.append(query.substring(orIsNullEnd+1));
         }
         query = newQuery.toString();
         return query;
