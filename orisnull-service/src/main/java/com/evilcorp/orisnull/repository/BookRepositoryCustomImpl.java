@@ -21,12 +21,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             return Collections.emptyList();
         }
         String sql = "" +
-                " select b from Book b where " +
-                "     1=1                    " + (filter.getAuthor() == null ? "" :
-                " and b.author = :author     ") + (filter.getCountry() == null ? "" :
-                " and b.country = :country   ") + (filter.getRating() == null ? "" :
-                " and b.rating = :rating     ") + (filter.getName() == null ? "" :
-                " and b.name = :name         ");
+                " select b from Book b where "  +
+                "     1=1                    "  /* +  (filter.getAuthor() == null ? "" :
+                " and b.author = :author     ") */ + (filter.getCountry() == null ? "" :
+                " and b.country = :country   ") + (filter.getName() == null ? "" :
+                " and b.name = :name         ") + (filter.getRating() == null ? "" :
+                " and b.rating = :rating     ")
+                ;
 
         final var em = emf.createEntityManager();
         final var query = em.createQuery(sql, Book.class);

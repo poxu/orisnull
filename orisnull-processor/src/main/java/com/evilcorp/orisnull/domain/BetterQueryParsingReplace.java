@@ -18,24 +18,22 @@ public class BetterQueryParsingReplace implements BetterQuery {
         final List<String> paramNames = params.fields();
 
         for (String paramName : paramNames) {
-            query = removePattern(query, Pattern.compile("or\\s+:" + paramName + "\\s+is\\s+null", Pattern.CASE_INSENSITIVE), true);
-            query = removePattern(query, Pattern.compile(":" + paramName + "\\s+is\\s+null\\s+or", Pattern.CASE_INSENSITIVE), false);
+            query = removePattern(query, Pattern.compile(":" + paramName + "\\s+is\\s+null", Pattern.CASE_INSENSITIVE));
         }
 
         return query;
     }
 
-    private String removePattern(String query, Pattern pattern, boolean leftOr) {
+    private String removePattern(String query, Pattern pattern) {
         final Matcher matcher = pattern.matcher(query);
         final List<MatchResult> collect = matcher.results().collect(Collectors.toList());
         for (MatchResult matchResult : collect) {
-            System.out.println("m");
-            query = removeIsNull(query, matchResult, leftOr);
+            query = removeIsNull(query, matchResult);
         }
         return query;
     }
 
-    private String removeIsNull(String query, MatchResult matchResult, boolean leftOr) {
+    private String removeIsNull(String query, MatchResult matchResult) {
         final int orIsNullStart = matchResult.start();
         if (orIsNullStart == -1) {
             return query;
@@ -51,13 +49,8 @@ public class BetterQueryParsingReplace implements BetterQuery {
             separator = "=";
         }
         newQuery.append(query.substring(0, orIsNullStart));
-        if (leftOr) {
-            newQuery.append("or (1" + separator + "1)");
-            newQuery.append(query.substring(orIsNullEnd));
-        } else {
-            newQuery.append("(1" + separator + "1) or ");
-            newQuery.append(query.substring(orIsNullEnd+1));
-        }
+        newQuery.append("(1" + separator + "1)");
+        newQuery.append(query.substring(orIsNullEnd));
         query = newQuery.toString();
         return query;
     }

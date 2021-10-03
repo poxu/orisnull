@@ -11,31 +11,16 @@ import java.util.List;
 public interface BookSearchService {
     //language=HQL
     @OrIsNullQuery(value = "" +
-            " select                           " + "\n" +
-            "   b                              " + "\n" +
-            " from                             " + "\n" +
-            "   Book b                         " + "\n" +
-            " where                            " + "\n" +
-            "       1=1                        " + "\n" +
-            "   and b.author = :author   -- op " + "\n" +
-            "   and b.country = :country -- op " + "\n" +
-            "   and b.rating = :rating   -- op " + "\n" +
-            "   and b.name = :name       -- op "
-    )
-    List<Book> findBooks(BookFilter filter);
-
-    //language=HQL
-    @OrIsNullQuery(value = "" +
-            " select                           " + "\n" +
-            "   b                              " + "\n" +
-            " from                             " + "\n" +
-            "   Book b                         " + "\n" +
-            " where                            " + "\n" +
-            "       1=1                        " + "\n" +
-            "   and b.author = :author   -- op " + "\n" +
-            "   and b.country = :country -- op " + "\n" +
-            "   and b.rating = :rating   -- op " + "\n" +
-            "   and b.name = :name       -- op "
+            " select                                         " +
+            "   b                                            " +
+            " from                                           " +
+            "   Book b                                       " +
+            " where                                          " +
+            "       1=1                                      " +
+            "   and b.author = :author   or :author is null  " +
+            "   and b.country = :country or :country is null " +
+            "   and b.rating = :rating   or :rating is null  " +
+            "   and b.name = :name       or :name is null    "
     )
     List<Book> findAllBooks(BookFilter filter);
 }

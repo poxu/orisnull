@@ -48,6 +48,7 @@ public class FilterWrapperGenerator {
             builder.addStatement("$1L(jpqlQuery, \"$1L\")", field.name());
         }
         builder.addStatement("return jpqlQuery");
+
         return builder.build();
 
     }

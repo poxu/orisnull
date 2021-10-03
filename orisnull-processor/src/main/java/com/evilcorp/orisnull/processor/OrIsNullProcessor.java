@@ -52,27 +52,27 @@ public class OrIsNullProcessor extends AbstractProcessor {
             for (Element annotatedElement : annotatedElements) {
 
                 logger.debug(() -> "found class " + annotatedElement.getSimpleName());
-                final List<? extends Element> collect = annotatedElement.getEnclosedElements()
+                final List<? extends Element> queryMethodCandidates = annotatedElement.getEnclosedElements()
                         .stream()
                         .filter(e -> e.getKind() == ElementKind.METHOD)
                         .collect(Collectors.toList());
-                logger.debug(() -> "forund methods " + collect.size());
+                logger.debug(() -> "forund methods " + queryMethodCandidates.size());
 
                 BetterClass iface = new AnnotatedBetterClass(annotatedElement);
 
                 List<SearchMethod> methods = new ArrayList<>();
 
-                for (Element method : collect) {
-                    logger.debug(() -> method.toString());
-                    logger.debug(() -> method.getEnclosedElements().size());
-                    logger.debug(() -> method.getKind());
+                for (Element queryMethodCandidate : queryMethodCandidates) {
+                    logger.debug(() -> queryMethodCandidate.toString());
+                    logger.debug(() -> queryMethodCandidate.getEnclosedElements().size());
+                    logger.debug(() -> queryMethodCandidate.getKind());
 
-                    final var typeMirror = (ExecutableType) method.asType();
+                    final var typeMirror = (ExecutableType) queryMethodCandidate.asType();
                     if (typeMirror.getParameterTypes().size() != 1) {
                         continue;
                     }
-                    final var methodSimpleName = method.getSimpleName().toString();
-                    final var query = method.getAnnotation(OrIsNullQuery.class);
+                    final var methodSimpleName = queryMethodCandidate.getSimpleName().toString();
+                    final var query = queryMethodCandidate.getAnnotation(OrIsNullQuery.class);
 
                     if (query == null) {
                         continue;

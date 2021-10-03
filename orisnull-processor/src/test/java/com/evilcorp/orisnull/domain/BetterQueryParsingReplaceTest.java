@@ -223,8 +223,8 @@ class BetterQueryParsingReplaceTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "       (b.name = :name or (1!=1)) "
-                + "   and (b.descr = :descr or (1!=1)) "
+                + "       (b.name = :name or  (1!=1)) "
+                + "   and (b.descr = :descr or  (1!=1)) "
                 ;
 
         String query = ""
