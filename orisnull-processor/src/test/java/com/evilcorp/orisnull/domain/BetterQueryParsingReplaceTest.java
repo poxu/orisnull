@@ -58,7 +58,7 @@ class BetterQueryParsingReplaceTest {
 
             @Override
             public List<String> fields() {
-                return List.of("name");
+                return List.of("name", "fame");
             }
         };
 

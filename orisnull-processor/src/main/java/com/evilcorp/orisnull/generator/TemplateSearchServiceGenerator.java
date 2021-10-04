@@ -45,7 +45,7 @@ public class TemplateSearchServiceGenerator {
     public void toFiler(Filer filer) {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
         try {
-            cfg.setDirectoryForTemplateLoading(new File("/home/riptor/projects/orisnull/orisnull-processor/src/main/resources"));
+            cfg.setClassForTemplateLoading(this.getClass(), "/");
 
             // Set the preferred charset template files are stored in. UTF-8 is
 // a good choice in most applications:
@@ -82,30 +82,5 @@ public class TemplateSearchServiceGenerator {
 // Do not fall back to higher scopes when reading a null loop variable:
 //        cfg.setFallbackOnNullLoopVariable(false);
 
-    }
-
-    public static void main(String[] args) {
-        BetterClass entity = new SimpleBetterClass( "com.evilcorp.Book",
-                List.of(
-                        new SimpleField("first", "String"),
-                        new SimpleField("second", "Integer")
-                )
-        );
-
-        BetterClass filter = new SimpleBetterClass( "com.evilcorp.BookFilter",
-                List.of(
-                        new SimpleField("first", "String"),
-                        new SimpleField("second", "Integer")
-                )
-        );
-
-        final SearchMethod findAll = new SearchMethod(filter, entity, "findAll", "");
-
-
-        BetterClass klass = new SimpleBetterClass("test.ClassName",
-                Collections.emptyList()
-        );
-        TemplateSearchServiceGenerator templateSearchServiceGenerator = new TemplateSearchServiceGenerator(klass, List.of(findAll));
-        templateSearchServiceGenerator.toFiler(null);
     }
 }

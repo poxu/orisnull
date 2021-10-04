@@ -1,6 +1,5 @@
 package com.evilcorp.orisnull.generator;
 
-import com.evilcorp.orisnull.domain.BetterQueryParsingReplace;
 import com.evilcorp.orisnull.domain.QueryParams;
 import com.evilcorp.orisnull.model.BetterClass;
 import com.evilcorp.orisnull.model.Field;
@@ -51,29 +50,18 @@ public class FilterWrapperGenerator {
         return in.toUpperCase().charAt(0) + in.substring(1);
     }
 
-    public MethodSpec cleanQuery() {
-        return MethodSpec.methodBuilder("cleanQuery")
-                .returns(String.class)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(String.class, "query")
-                .addStatement("return params.cleanQuery(query)")
-                .build();
-    }
-
     public TypeSpec.Builder classAndConstructor() {
         final ClassName filterName = ClassName.get(filter.packageName(), filter.shortName());
         final var helper = TypeSpec.classBuilder(filter.shortName() + "Helper")
                 .addSuperinterface(ClassName.get(QueryParams.class))
                 ;
         helper.addField(filterName, "filter", Modifier.PRIVATE);
-        helper.addField(ClassName.get(BetterQueryParsingReplace.class), "params", Modifier.PRIVATE, Modifier.FINAL);
         helper.addMethod(MethodSpec.constructorBuilder()
                 .addParameter(filterName, "filter")
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement(CodeBlock.builder()
                         .add("this.filter = filter")
                         .build())
-                .addStatement("this.params = new BetterQueryParsingReplace(this)")
                 .build());
         return helper;
     }
@@ -100,7 +88,6 @@ public class FilterWrapperGenerator {
         final TypeSpec.Builder helper = this.classAndConstructor();
         helper.addMethod(this.fieldEnabled());
         helper.addMethod(this.fields(filter.fields()));
-        helper.addMethod(this.cleanQuery());
         return helper.build();
     }
 

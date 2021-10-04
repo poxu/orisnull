@@ -10,7 +10,6 @@ public class FreeField {
     public FreeField(String name, String type, BetterClass betterClass) {
         this.name = name;
         this.type = type;
-//        this.klass = new FreeKlass(betterClass);
     }
 
     public String getName() {

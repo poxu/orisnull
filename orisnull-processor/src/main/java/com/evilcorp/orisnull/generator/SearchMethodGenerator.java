@@ -1,5 +1,6 @@
 package com.evilcorp.orisnull.generator;
 
+import com.evilcorp.orisnull.domain.BetterQueryParsingReplace;
 import com.evilcorp.orisnull.model.Field;
 import com.evilcorp.orisnull.model.SearchMethod;
 import com.squareup.javapoet.ClassName;
@@ -32,7 +33,7 @@ public class SearchMethodGenerator {
                 .beginControlFlow("if (filter.isEmpty()) ")
                 .addStatement("return $T.emptyList()", Collections.class)
                 .endControlFlow()
-                .addStatement("$1L orisnull = new $1L(filter)", method.filter().shortName() + "Helper")
+                .addStatement("final var orisnull = new $1T(new $2L(filter))", BetterQueryParsingReplace.class, method.filter().shortName() + "Helper")
                 .addStatement("String sql = $S", method.query())
                 .addStatement("final var em = emf.createEntityManager()")
                 .addStatement("final String result = orisnull.cleanQuery(sql)")

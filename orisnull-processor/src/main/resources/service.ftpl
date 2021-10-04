@@ -28,11 +28,8 @@ public class ${klass.shortname}Impl implements ${klass.shortname} {
     public static class ${method.filter.shortname}Params implements QueryParams {
         private ${method.filter.shortname} filter;
 
-        private final BetterQueryParsingReplace params;
-
         public ${method.filter.shortname}Params(${method.filter.shortname} filter) {
           this.filter = filter;
-          this.params = new BetterQueryParsingReplace(this);
         }
 
         @Override
@@ -56,10 +53,6 @@ public class ${klass.shortname}Impl implements ${klass.shortname} {
           );
         }
 
-        public String transform(String sql) {
-            return params.cleanQuery(sql);
-        }
-
     }
 
 
@@ -68,9 +61,9 @@ public class ${klass.shortname}Impl implements ${klass.shortname} {
         if (filter.isEmpty()) {
             return Collections.emptyList();
         }
-        ${method.filter.shortname}Params transformer = new ${method.filter.shortname}Params(filter);
+        final var transformer = new BetterQueryParsingReplace(new ${method.filter.shortname}Params(filter));
 
-        String sql = transformer.transform("${method.alignedQuery}");
+        final var sql = transformer.cleanQuery("${method.alignedQuery}");
 
         final var em = emf.createEntityManager();
         final var query = em.createQuery(sql, ${method.entity.shortname}.class);

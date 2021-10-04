@@ -109,14 +109,14 @@ public class OrIsNullProcessor extends AbstractProcessor {
                     ));
                 }
 
-                final var searchGenerator = new SearchServiceGenerator(
-                        iface,
-                        methods
-                );
-//                final var searchGenerator = new TemplateSearchServiceGenerator(
+//                final var searchGenerator = new SearchServiceGenerator(
 //                        iface,
 //                        methods
 //                );
+                final var searchGenerator = new TemplateSearchServiceGenerator(
+                        iface,
+                        methods
+                );
                 searchGenerator.toFiler(processingEnv.getFiler());
             }
         }
