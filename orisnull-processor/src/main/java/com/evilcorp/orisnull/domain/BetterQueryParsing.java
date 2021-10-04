@@ -61,7 +61,7 @@ public class BetterQueryParsing implements BetterQuery {
         final int orIsNullEnd = matchResult.end();
 
         StringBuilder newQuery = new StringBuilder();
-        if (params.fieldEnabled("name")) {
+        if (params.fieldEnabled(":name")) {
             newQuery.append(query.substring(0, orIsNullStart));
             if (leftOr) {
                 newQuery.append("or 1!=1");

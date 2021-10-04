@@ -191,23 +191,7 @@ class BookRepositoryTest {
         }
     }
 
-    @Nested
-    class JpqlWithCrazyHelperTest {
-        @Test
-        void nonExistingFilter() {
-            final var pelevin = bookRepository.findByFilterNativeWithCrazyHelper(book().build());
-            assertEquals(0, pelevin.size());
-        }
 
-        @Test
-        void existingFilter() {
-            final var pelevin = bookRepository.findByFilterNativeWithCrazyHelper(book()
-                    .author("Pelevin")
-                    .rating(5)
-                    .build());
-            assertEquals(1, pelevin.size());
-        }
-    }
 
     @Nested
     class JpqlWithHelperTest {

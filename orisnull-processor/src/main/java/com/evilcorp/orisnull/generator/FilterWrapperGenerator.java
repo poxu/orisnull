@@ -1,6 +1,6 @@
 package com.evilcorp.orisnull.generator;
 
-import com.evilcorp.orisnull.domain.BetterQueryWithHints;
+import com.evilcorp.orisnull.domain.BetterQueryParsingReplace;
 import com.evilcorp.orisnull.domain.QueryParams;
 import com.evilcorp.orisnull.model.BetterClass;
 import com.evilcorp.orisnull.model.Field;
@@ -59,7 +59,7 @@ public class FilterWrapperGenerator {
                 ;
         for (Field field : filter.fields()) {
             builder.addStatement(CodeBlock.builder()
-                    .add("case \":$L\":", field.name())
+                    .add("case \"$L\":", field.name())
                     .add("return !$L()", field.name()).build())
             ;
         }
@@ -90,9 +90,9 @@ public class FilterWrapperGenerator {
                         .build())
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(CodeBlock.builder()
-                        .beginControlFlow("if (!$L())", field.name())
+//                        .beginControlFlow("if (!$L())", field.name())
                         .addStatement("query.setParameter(name, filter.get$L())", capitalize(field.name()))
-                        .endControlFlow()
+//                        .endControlFlow()
                         .build())
                 .build();
         return methodSpec;
@@ -117,14 +117,14 @@ public class FilterWrapperGenerator {
                 .addSuperinterface(ClassName.get(QueryParams.class))
                 ;
         helper.addField(filterName, "filter", Modifier.PRIVATE);
-        helper.addField(ClassName.get(BetterQueryWithHints.class), "params", Modifier.PRIVATE, Modifier.FINAL);
+        helper.addField(ClassName.get(BetterQueryParsingReplace.class), "params", Modifier.PRIVATE, Modifier.FINAL);
         helper.addMethod(MethodSpec.constructorBuilder()
                 .addParameter(filterName, "filter")
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement(CodeBlock.builder()
                         .add("this.filter = filter")
                         .build())
-                .addStatement("this.params = new BetterQueryWithHints(this)")
+                .addStatement("this.params = new BetterQueryParsingReplace(this)")
                 .build());
         return helper;
     }

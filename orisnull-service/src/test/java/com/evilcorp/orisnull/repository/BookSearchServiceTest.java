@@ -33,14 +33,14 @@ public class BookSearchServiceTest {
     class GenTest {
         @Test
         void nonExistingFilter() {
-            final var pelevin = bookSearchServiceImplSecond.findBooks(book()
+            final var pelevin = bookSearchServiceImplSecond.findAllBooks(book()
                     .build());
             assertEquals(0, pelevin.size());
         }
 
         @Test
         void existingFilter() {
-            final var pelevin = bookSearchServiceImplSecond.findBooks(book()
+            final var pelevin = bookSearchServiceImplSecond.findAllBooks(book()
                     .author("Pelevin")
                     .rating(4)
                     .build());

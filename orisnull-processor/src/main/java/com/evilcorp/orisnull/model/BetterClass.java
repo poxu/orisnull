@@ -16,5 +16,5 @@ public interface BetterClass {
 
     }
 
-    List<Field> fields();
+    List<Field>     fields();
 }

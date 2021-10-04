@@ -18,22 +18,22 @@ public class BetterQueryParsingReplace implements BetterQuery {
         final List<String> paramNames = params.fields();
 
         for (String paramName : paramNames) {
-            query = removePattern(query, Pattern.compile(":" + paramName + "\\s+is\\s+null", Pattern.CASE_INSENSITIVE));
+            query = removePattern(query, paramName, Pattern.compile(":" + paramName + "\\s+is\\s+null", Pattern.CASE_INSENSITIVE));
         }
 
         return query;
     }
 
-    private String removePattern(String query, Pattern pattern) {
+    private String removePattern(String query, String paramName, Pattern pattern) {
         final Matcher matcher = pattern.matcher(query);
         final List<MatchResult> collect = matcher.results().collect(Collectors.toList());
         for (MatchResult matchResult : collect) {
-            query = removeIsNull(query, matchResult);
+            query = removeIsNull(query, paramName, matchResult);
         }
         return query;
     }
 
-    private String removeIsNull(String query, MatchResult matchResult) {
+    private String removeIsNull(String query, String paramName, MatchResult matchResult) {
         final int orIsNullStart = matchResult.start();
         if (orIsNullStart == -1) {
             return query;
@@ -43,7 +43,7 @@ public class BetterQueryParsingReplace implements BetterQuery {
 
         StringBuilder newQuery = new StringBuilder();
         final String separator;
-        if (params.fieldEnabled("name")) {
+        if (params.fieldEnabled(paramName)) {
             separator = "!=";
         } else {
             separator = "=";

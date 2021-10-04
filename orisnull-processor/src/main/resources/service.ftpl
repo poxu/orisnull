@@ -1,0 +1,83 @@
+package ${klass.packageName};
+
+import com.evilcorp.orisnull.domain.BetterQueryParsingReplace;
+import com.evilcorp.orisnull.domain.QueryParams;
+<#list methods as method>
+import ${method.entity.fullname};
+import ${method.filter.fullname};
+</#list>
+import java.lang.IllegalArgumentException;
+import java.lang.Override;
+import java.lang.String;
+import java.util.Collections;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.Arrays;
+
+@Service
+public class ${klass.shortname}Impl implements ${klass.shortname} {
+
+
+    @Autowired
+    EntityManagerFactory emf;
+<#list methods as method>
+    public static class ${method.filter.shortname}Params implements QueryParams {
+        private ${method.filter.shortname} filter;
+
+        private final BetterQueryParsingReplace params;
+
+        public ${method.filter.shortname}Params(${method.filter.shortname} filter) {
+          this.filter = filter;
+          this.params = new BetterQueryParsingReplace(this);
+        }
+
+        @Override
+        public boolean fieldEnabled(String paramName) {
+          switch(paramName) {
+        <#list method.filter.fields as field>
+            case "${field.name}":return filter.${field.getter}() != null;
+        </#list>
+
+            default:throw new IllegalArgumentException("Unexpected parameterName " + paramName);
+          }
+        }
+
+        public List<String> fields() {
+          return Arrays.asList(
+              new String[] {
+                  <#list method.filter.fields as field>
+                    "${field.name}",
+                  </#list>
+              }
+          );
+        }
+
+        public String transform(String sql) {
+            return params.cleanQuery(sql);
+        }
+
+    }
+
+
+    @Override
+    public List<${method.entity.shortname}> ${method.name}(${method.filter.shortname} filter) {
+        if (filter.isEmpty()) {
+            return Collections.emptyList();
+        }
+        ${method.filter.shortname}Params transformer = new ${method.filter.shortname}Params(filter);
+
+        String sql = transformer.transform("${method.alignedQuery}");
+
+        final var em = emf.createEntityManager();
+        final var query = em.createQuery(sql, ${method.entity.shortname}.class);
+        <#list method.filter.fields as field>
+        query.setParameter("${field.name}", filter.${field.getter}());
+        </#list>
+        return query.getResultList();
+    }
+</#list>
+}

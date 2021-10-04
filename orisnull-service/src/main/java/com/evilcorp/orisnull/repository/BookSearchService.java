@@ -17,10 +17,10 @@ public interface BookSearchService {
             "   Book b                                       " +
             " where                                          " +
             "       1=1                                      " +
-            "   and b.author = :author   or :author is null  " +
-            "   and b.country = :country or :country is null " +
-            "   and b.rating = :rating   or :rating is null  " +
-            "   and b.name = :name       or :name is null    "
+            "   and (b.author = :author   or :author is null)  " +
+            "   and (b.country = :country or :country is null) " +
+            "   and (b.rating = :rating   or :rating is null)  " +
+            "   and (b.name = :name       or :name is null)    "
     )
     List<Book> findAllBooks(BookFilter filter);
 }

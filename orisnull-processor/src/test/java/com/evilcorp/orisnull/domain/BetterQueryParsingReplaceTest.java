@@ -111,7 +111,7 @@ class BetterQueryParsingReplaceTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   (b.name = :name or (1=1)) "
+                + "   (b.fame = :fame or (1=1)) "
                 ;
 
         String query = ""
@@ -120,7 +120,7 @@ class BetterQueryParsingReplaceTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   (b.name = :name or :name is null) ";
+                + "   (b.fame = :fame or :fame is null) ";
 //        QueryParams params = "name"::equals;
         QueryParams params = new QueryParams() {
             @Override
@@ -130,7 +130,7 @@ class BetterQueryParsingReplaceTest {
 
             @Override
             public List<String> fields() {
-                return List.of("name");
+                return List.of("fame");
             }
         };
 

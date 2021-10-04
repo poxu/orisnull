@@ -2,6 +2,7 @@ package com.evilcorp.orisnull.processor;
 
 import com.evilcorp.orisnull.annotation.OrIsNullQuery;
 import com.evilcorp.orisnull.generator.SearchServiceGenerator;
+import com.evilcorp.orisnull.generator.TemplateSearchServiceGenerator;
 import com.evilcorp.orisnull.model.AnnotatedBetterClass;
 import com.evilcorp.orisnull.model.BetterClass;
 import com.evilcorp.orisnull.model.SearchMethod;
@@ -108,7 +109,11 @@ public class OrIsNullProcessor extends AbstractProcessor {
                     ));
                 }
 
-                final var searchGenerator = new SearchServiceGenerator(
+//                final var searchGenerator = new SearchServiceGenerator(
+//                        iface,
+//                        methods
+//                );
+                final var searchGenerator = new TemplateSearchServiceGenerator(
                         iface,
                         methods
                 );
