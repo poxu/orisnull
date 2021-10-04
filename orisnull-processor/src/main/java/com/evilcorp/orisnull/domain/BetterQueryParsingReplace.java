@@ -24,7 +24,6 @@ public class BetterQueryParsingReplace implements BetterQuery {
                 transformedQuery = matcher.replaceAll("(1=1)");
             }
         }
-
         return transformedQuery;
     }
 

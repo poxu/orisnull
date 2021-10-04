@@ -7,7 +7,9 @@ import com.evilcorp.orisnull.model.SimpleField;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SearchServiceGeneratorTest {
     @Test
@@ -31,5 +33,11 @@ public class SearchServiceGeneratorTest {
         );
 
         System.out.println(searchServiceGenerator.body());
+
+        Map<String, String> map = new HashMap<>();
+        map.put("notNull", "exists");
+        map.put("null", null);
+        System.out.println(map);
+        System.out.println(map.keySet());
     }
 }

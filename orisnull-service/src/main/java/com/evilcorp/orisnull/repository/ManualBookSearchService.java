@@ -7,8 +7,8 @@ import com.evilcorp.orisnull.filter.BookFilter;
 
 import java.util.List;
 
-@OrIsNullRepository(engine = "Freemaker")
-public interface OtherBookSearchService {
+//@OrIsNullRepository(engine = "Freemaker")
+public interface ManualBookSearchService {
     //language=HQL
     @OrIsNullQuery(value = "" +
             " select                                           " +

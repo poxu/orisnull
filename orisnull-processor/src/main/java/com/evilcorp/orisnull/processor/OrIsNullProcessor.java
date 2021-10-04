@@ -1,6 +1,7 @@
 package com.evilcorp.orisnull.processor;
 
 import com.evilcorp.orisnull.annotation.OrIsNullQuery;
+import com.evilcorp.orisnull.annotation.OrIsNullRepository;
 import com.evilcorp.orisnull.generator.SearchServiceGenerator;
 import com.evilcorp.orisnull.generator.TemplateSearchServiceGenerator;
 import com.evilcorp.orisnull.model.AnnotatedBetterClass;
@@ -46,20 +47,20 @@ public class OrIsNullProcessor extends AbstractProcessor {
         getSupportedAnnotationTypes().forEach(at -> logger.debug(() -> at));
         logger.debug(() -> "started");
         logger.debug(() -> "found annotations " + annotations.size());
-        for (TypeElement annotation : annotations) {
+        for (TypeElement orIsNullAnnotation : annotations) {
             Set<? extends Element> annotatedElements
-                    = roundEnv.getElementsAnnotatedWith(annotation);
+                    = roundEnv.getElementsAnnotatedWith(orIsNullAnnotation);
             logger.debug(() -> "found classes " + annotatedElements.size());
-            for (Element annotatedElement : annotatedElements) {
+            for (Element orIsNullRepository : annotatedElements) {
 
-                logger.debug(() -> "found class " + annotatedElement.getSimpleName());
-                final List<? extends Element> queryMethodCandidates = annotatedElement.getEnclosedElements()
+                logger.debug(() -> "found class " + orIsNullRepository.getSimpleName());
+                final List<? extends Element> queryMethodCandidates = orIsNullRepository.getEnclosedElements()
                         .stream()
                         .filter(e -> e.getKind() == ElementKind.METHOD)
                         .collect(Collectors.toList());
                 logger.debug(() -> "forund methods " + queryMethodCandidates.size());
 
-                BetterClass iface = new AnnotatedBetterClass(annotatedElement);
+                BetterClass orIsNullInterface = new AnnotatedBetterClass(orIsNullRepository);
 
                 List<SearchMethod> methods = new ArrayList<>();
 
@@ -108,16 +109,21 @@ public class OrIsNullProcessor extends AbstractProcessor {
                             query.value()
                     ));
                 }
+                final String engine = orIsNullRepository.getAnnotation(OrIsNullRepository.class).engine();
 
-//                final var searchGenerator = new SearchServiceGenerator(
-//                        iface,
-//                        methods
-//                );
-                final var searchGenerator = new TemplateSearchServiceGenerator(
-                        iface,
-                        methods
-                );
-                searchGenerator.toFiler(processingEnv.getFiler());
+                if ("".equals(engine)) {
+                    final var searchGenerator = new SearchServiceGenerator(
+                            orIsNullInterface,
+                            methods
+                    );
+                    searchGenerator.toFiler(processingEnv.getFiler());
+                } else {
+                    final var searchGenerator = new TemplateSearchServiceGenerator(
+                            orIsNullInterface,
+                            methods
+                    );
+                    searchGenerator.toFiler(processingEnv.getFiler());
+                }
             }
         }
         return true;
