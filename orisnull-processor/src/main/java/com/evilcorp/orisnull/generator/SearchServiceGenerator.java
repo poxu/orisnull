@@ -65,8 +65,7 @@ public class SearchServiceGenerator {
 
             if (!wrappers.containsKey(method.filter().name())) {
                 final var generator = new FilterWrapperGenerator(
-                        method.filter(),
-                        method.entity()
+                        method.filter()
                 );
                 final var wrapper = generator.generateWrapper();
                 wrappers.put(method.filter().name(), wrapper);

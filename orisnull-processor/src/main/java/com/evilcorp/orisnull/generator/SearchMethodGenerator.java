@@ -1,5 +1,6 @@
 package com.evilcorp.orisnull.generator;
 
+import com.evilcorp.orisnull.model.Field;
 import com.evilcorp.orisnull.model.SearchMethod;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -23,7 +24,7 @@ public class SearchMethodGenerator {
         TypeName returnTypeClass = ParameterizedTypeName.get(entityListClass, entityClass);
         ClassName filterName = ClassName.get(method.filter().packageName(), method.filter().shortName());
 
-        final var mainMethod = MethodSpec.methodBuilder(method.name())
+        var mainMethod = MethodSpec.methodBuilder(method.name())
                 .addAnnotation(ClassName.get(Override.class))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(returnTypeClass)
@@ -34,9 +35,19 @@ public class SearchMethodGenerator {
                 .addStatement("$1L orisnull = new $1L(filter)", method.filter().shortName() + "Helper")
                 .addStatement("String sql = $S", method.query())
                 .addStatement("final var em = emf.createEntityManager()")
-                .addStatement("final var query = orisnull.toQuery(em, sql)")
-                .addStatement("return query.getResultList()")
+                .addStatement("final String result = orisnull.cleanQuery(sql)")
+                .addStatement("final var jpqlQuery = em.createQuery(result, $L.class)", method.entity().shortName());
+        for (Field field : method.filter().fields()) {
+            mainMethod.addStatement("jpqlQuery.setParameter(\"$1L\", filter.get$2L())"
+                    , field.name(), capitalize(field.name()));
+        }
+
+        return mainMethod.addStatement("return jpqlQuery.getResultList()")
                 .build();
-        return mainMethod;
     }
+
+    String capitalize(String in) {
+        return in.toUpperCase().charAt(0) + in.substring(1);
+    }
+
 }
