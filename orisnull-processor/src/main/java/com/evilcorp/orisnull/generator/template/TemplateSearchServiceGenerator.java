@@ -1,28 +1,19 @@
-package com.evilcorp.orisnull.generator;
+package com.evilcorp.orisnull.generator.template;
 
 import com.evilcorp.orisnull.generator.template.FreeKlass;
 import com.evilcorp.orisnull.generator.template.FreeMethod;
 import com.evilcorp.orisnull.model.BetterClass;
 import com.evilcorp.orisnull.model.SearchMethod;
-import com.evilcorp.orisnull.model.SimpleBetterClass;
-import com.evilcorp.orisnull.model.SimpleField;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeSpec;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 import javax.annotation.processing.Filer;
-import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +54,8 @@ public class TemplateSearchServiceGenerator {
             Map<String, Object> root = new HashMap<>();
             root.put("packageName", orIsNullSearchInterface.packageName());
             root.put("klass", new FreeKlass(orIsNullSearchInterface));
-            root.put("methods", methods.stream().map(m -> new FreeMethod(m)).collect(Collectors.toList()));
+            root.put("methods", methods.stream().map(FreeMethod::new)
+                    .collect(Collectors.toList()));
 //            Writer out = new OutputStreamWriter(System.out);
             final JavaFileObject sourceFile = filer.createSourceFile(orIsNullSearchInterface.name() + "Impl");
 //            Writer out = new OutputStreamWriter(System.out);

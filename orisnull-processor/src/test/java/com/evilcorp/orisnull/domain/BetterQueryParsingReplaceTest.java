@@ -2,7 +2,8 @@ package com.evilcorp.orisnull.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,18 +17,9 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b         "
                 + " where               "
                 + "      b.name = :name ";
-        QueryParams params = new QueryParams() {
-            @Override
-            public boolean fieldEnabled(String paramName) {
-                return "name".equals(paramName);
-            }
-
-            @Override
-            public List<String> fields() {
-                return List.of("name");
-            }
-        };
+        Map<String, Object> params = Map.of("name", "name");
         BetterQuery betterQuery = new BetterQueryParsingReplace(params);
+
         final String cleanedQuery = betterQuery.cleanQuery(query);
 
         assertEquals(query, cleanedQuery);
@@ -50,17 +42,10 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "   (:name is null or b.name = :name) ";
-        QueryParams params = new QueryParams() {
-            @Override
-            public boolean fieldEnabled(String paramName) {
-                return "name".equals(paramName);
-            }
 
-            @Override
-            public List<String> fields() {
-                return List.of("name", "fame");
-            }
-        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "name");
+        params.put("fame", null);
 
         BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
@@ -85,17 +70,9 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "   (:name is null or b.name = :name) ";
-        QueryParams params = new QueryParams() {
-            @Override
-            public boolean fieldEnabled(String paramName) {
-                return false;
-            }
 
-            @Override
-            public List<String> fields() {
-                return List.of("name");
-            }
-        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", null);
 
         BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
@@ -111,8 +88,7 @@ class BetterQueryParsingReplaceTest {
                 + " from                                "
                 + "      Book b                         "
                 + " where                               "
-                + "   (b.fame = :fame or (1=1)) "
-                ;
+                + "   (b.fame = :fame or (1=1)) ";
 
         String query = ""
                 + " select                              "
@@ -121,18 +97,9 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "   (b.fame = :fame or :fame is null) ";
-//        QueryParams params = "name"::equals;
-        QueryParams params = new QueryParams() {
-            @Override
-            public boolean fieldEnabled(String paramName) {
-                return false;
-            }
 
-            @Override
-            public List<String> fields() {
-                return List.of("fame");
-            }
-        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("fame", null);
 
         BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
@@ -158,17 +125,9 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "   (b.name = :name or :name is null) ";
-        QueryParams params = new QueryParams() {
-            @Override
-            public boolean fieldEnabled(String paramName) {
-                return "name".equals(paramName);
-            }
 
-            @Override
-            public List<String> fields() {
-                return List.of("name");
-            }
-        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "name");
 
         BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
@@ -185,8 +144,7 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "       (b.name = :name or (1!=1)) "
-                + "   and (b.descr = :descr or (1!=1)) "
-                ;
+                + "   and (b.descr = :descr or (1!=1)) ";
 
         String query = ""
                 + " select                              "
@@ -195,19 +153,11 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "       (b.name = :name or :name is null) "
-                + "   and (b.descr = :descr or :descr is null) "
-                ;
-        QueryParams params = new QueryParams() {
-            @Override
-            public boolean fieldEnabled(String paramName) {
-                return List.of("name", "descr").contains(paramName);
-            }
+                + "   and (b.descr = :descr or :descr is null) ";
 
-            @Override
-            public List<String> fields() {
-                return List.of("name", "descr");
-            }
-        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "name");
+        params.put("descr", "descr");
 
         BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);
@@ -224,8 +174,7 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "       (b.name = :name or  (1!=1)) "
-                + "   and (b.descr = :descr or  (1!=1)) "
-                ;
+                + "   and (b.descr = :descr or  (1!=1)) ";
 
         String query = ""
                 + " select                              "
@@ -234,19 +183,11 @@ class BetterQueryParsingReplaceTest {
                 + "      Book b                         "
                 + " where                               "
                 + "       (b.name = :name or  :name  is    null) "
-                + "   and (b.descr = :descr or  :descr    is  null) "
-                ;
-        QueryParams params = new QueryParams() {
-            @Override
-            public boolean fieldEnabled(String paramName) {
-                return List.of("name", "descr").contains(paramName);
-            }
+                + "   and (b.descr = :descr or  :descr    is  null) ";
 
-            @Override
-            public List<String> fields() {
-                return List.of("name", "descr");
-            }
-        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "name");
+        params.put("descr", "descr");
 
         BetterQuery betterQuery = new BetterQueryParsingReplace(params);
         final String cleanedQuery = betterQuery.cleanQuery(query);

@@ -1,11 +1,11 @@
 package ${klass.packageName};
 
 import com.evilcorp.orisnull.domain.BetterQueryParsingReplace;
-import com.evilcorp.orisnull.domain.QueryParams;
 <#list methods as method>
 import ${method.entity.fullname};
 import ${method.filter.fullname};
 </#list>
+import java.util.HashMap;
 import java.lang.IllegalArgumentException;
 import java.lang.Override;
 import java.lang.String;
@@ -25,51 +25,20 @@ public class ${klass.shortname}Impl implements ${klass.shortname} {
     @Autowired
     EntityManagerFactory emf;
 <#list methods as method>
-    public static class ${method.filter.shortname}Params implements QueryParams {
-        private ${method.filter.shortname} filter;
-
-        public ${method.filter.shortname}Params(${method.filter.shortname} filter) {
-          this.filter = filter;
-        }
-
-        @Override
-        public boolean fieldEnabled(String paramName) {
-          switch(paramName) {
-        <#list method.filter.fields as field>
-            case "${field.name}":return filter.${field.getter}() != null;
-        </#list>
-
-            default:throw new IllegalArgumentException("Unexpected parameterName " + paramName);
-          }
-        }
-
-        public List<String> fields() {
-          return Arrays.asList(
-              new String[] {
-                  <#list method.filter.fields as field>
-                    "${field.name}",
-                  </#list>
-              }
-          );
-        }
-
-    }
-
-
     @Override
     public List<${method.entity.shortname}> ${method.name}(${method.filter.shortname} filter) {
         if (filter.isEmpty()) {
             return Collections.emptyList();
         }
-        final var transformer = new BetterQueryParsingReplace(new ${method.filter.shortname}Params(filter));
-
+        var params = new HashMap<String, Object>();
+    <#list method.filter.fields as field>
+        params.put("${field.name}", filter.${field.getter}());
+    </#list>
+        final var transformer = new BetterQueryParsingReplace(params);
         final var sql = transformer.cleanQuery("${method.alignedQuery}");
-
         final var em = emf.createEntityManager();
         final var query = em.createQuery(sql, ${method.entity.shortname}.class);
-        <#list method.filter.fields as field>
-        query.setParameter("${field.name}", filter.${field.getter}());
-        </#list>
+        params.forEach(query::setParameter);
         return query.getResultList();
     }
 </#list>

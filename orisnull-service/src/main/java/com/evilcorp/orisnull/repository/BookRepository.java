@@ -54,7 +54,7 @@ public interface BookRepository extends JpaRepository<Book, UUID>, BookRepositor
     @Query("" +
             " select b from Book b where                                                    " +
             "        1=1                                                                    " +
-            "   and (b.author = :#{#filter.author}   or :#{#filter.author == null} = true)  " +
+            "   and (b.author = :#{#filter.author}   or :#{#filter.author == null ? true : false} = true)  " +
             "   and (b.rating = :#{#filter.rating}   or :#{#filter.rating == null} = true)  " +
             "   and (b.country = :#{#filter.country} or :#{#filter.country == null} = true) " +
             "   and (b.name = :#{#filter.name}       or :#{#filter.name == null} = true)    "
