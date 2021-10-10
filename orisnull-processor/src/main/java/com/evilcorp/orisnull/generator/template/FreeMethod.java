@@ -12,9 +12,6 @@ public class FreeMethod {
         entity = new FreeKlass(method.entity());
     }
 
-    public String getAlignedQuery() {
-        return method.query().replaceAll("\\n", " ");
-    }
     public FreeKlass getFilter() {
         return filter;
     }
