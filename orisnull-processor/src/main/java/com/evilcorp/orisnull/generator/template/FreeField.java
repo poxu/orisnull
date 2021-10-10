@@ -1,42 +1,28 @@
 package com.evilcorp.orisnull.generator.template;
 
 import com.evilcorp.orisnull.model.OrIsNullClass;
+import com.evilcorp.orisnull.model.OrIsNullField;
 
 public class FreeField {
-    private String name;
-    private String type;
-    private FreeKlass klass;
+    private OrIsNullField orIsNullfield;
 
-    public FreeField(String name, String type, OrIsNullClass orIsNullClass) {
-        this.name = name;
-        this.type = type;
+    public FreeField(OrIsNullField orIsNullField) {
+        this.orIsNullfield = orIsNullField;
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return orIsNullfield.name();
     }
 
     public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+        return orIsNullfield.type();
     }
 
     public FreeKlass getKlass() {
-        return klass;
-    }
-
-    public void setKlass(FreeKlass klass) {
-        this.klass = klass;
+        return new FreeKlass(orIsNullfield.betterClass());
     }
 
     public String getGetter() {
-        return "get" + name.toUpperCase().charAt(0) + name.substring(1);
+        return "get" + getName().toUpperCase().charAt(0) + getName().substring(1);
     }
 }

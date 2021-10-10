@@ -6,49 +6,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FreeKlass {
-    private String packageName;
-    private String fullname;
-    private String shortname;
-    private List<FreeField> fields;
+    OrIsNullClass orIsNullSearchInterface;
 
     public FreeKlass(OrIsNullClass orIsNullSearchInterface) {
-        shortname = orIsNullSearchInterface.shortName();
-        fullname = orIsNullSearchInterface.name();
-        packageName = orIsNullSearchInterface.packageName();
-        fields = orIsNullSearchInterface.fields().stream()
-                .map(f -> new FreeField(f.name(), f.type(), f.betterClass()))
-                .collect(Collectors.toList());
+        this.orIsNullSearchInterface = orIsNullSearchInterface;
     }
 
     public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+        return orIsNullSearchInterface.packageName();
     }
 
     public String getFullname() {
-        return fullname;
+        return orIsNullSearchInterface.name();
     }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
     public String getShortname() {
-        return shortname;
-    }
-
-    public void setShortname(String shortname) {
-        this.shortname = shortname;
+        return orIsNullSearchInterface.shortName();
     }
 
     public List<FreeField> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<FreeField> fields) {
-        this.fields = fields;
+        return orIsNullSearchInterface.fields().stream()
+                .map(f -> new FreeField(f))
+                .collect(Collectors.toList());
     }
 }
