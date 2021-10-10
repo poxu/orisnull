@@ -1,13 +1,13 @@
 package com.evilcorp.orisnull.generator.template;
 
-import com.evilcorp.orisnull.model.BetterClass;
+import com.evilcorp.orisnull.model.OrIsNullClass;
 
 public class FreeField {
     private String name;
     private String type;
     private FreeKlass klass;
 
-    public FreeField(String name, String type, BetterClass betterClass) {
+    public FreeField(String name, String type, OrIsNullClass orIsNullClass) {
         this.name = name;
         this.type = type;
     }

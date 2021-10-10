@@ -1,7 +1,7 @@
 package com.evilcorp.orisnull.model;
 
-public interface Field {
+public interface OrIsNullField {
     String name();
     String type();
-    BetterClass betterClass();
+    OrIsNullClass betterClass();
 }

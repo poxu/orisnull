@@ -5,7 +5,7 @@ import javax.lang.model.type.ExecutableType;
 import java.util.Collections;
 import java.util.List;
 
-public class AnnotatedEntity implements BetterClass {
+public class AnnotatedEntity implements OrIsNullClass {
     private final Element queryMethod;
 
     public AnnotatedEntity(Element queryMethod) {
@@ -20,7 +20,7 @@ public class AnnotatedEntity implements BetterClass {
     }
 
     @Override
-    public List<Field> fields() {
+    public List<OrIsNullField> fields() {
         return Collections.emptyList();
     }
 }

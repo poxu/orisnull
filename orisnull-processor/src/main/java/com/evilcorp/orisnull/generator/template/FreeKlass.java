@@ -1,6 +1,6 @@
 package com.evilcorp.orisnull.generator.template;
 
-import com.evilcorp.orisnull.model.BetterClass;
+import com.evilcorp.orisnull.model.OrIsNullClass;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +11,7 @@ public class FreeKlass {
     private String shortname;
     private List<FreeField> fields;
 
-    public FreeKlass(BetterClass orIsNullSearchInterface) {
+    public FreeKlass(OrIsNullClass orIsNullSearchInterface) {
         shortname = orIsNullSearchInterface.shortName();
         fullname = orIsNullSearchInterface.name();
         packageName = orIsNullSearchInterface.packageName();

@@ -2,7 +2,7 @@ package com.evilcorp.orisnull.model;
 
 import java.util.List;
 
-public interface BetterClass {
+public interface OrIsNullClass {
     String name();
 
     default String shortName() {
@@ -16,5 +16,5 @@ public interface BetterClass {
 
     }
 
-    List<Field> fields();
+    List<OrIsNullField> fields();
 }

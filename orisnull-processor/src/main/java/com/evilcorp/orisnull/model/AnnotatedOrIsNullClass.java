@@ -4,10 +4,10 @@ import javax.lang.model.element.Element;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AnnotatedBetterClass implements BetterClass {
+public class AnnotatedOrIsNullClass implements OrIsNullClass {
     private final Element element;
 
-    public AnnotatedBetterClass(Element element) {
+    public AnnotatedOrIsNullClass(Element element) {
         this.element = element;
     }
 
@@ -17,10 +17,10 @@ public class AnnotatedBetterClass implements BetterClass {
     }
 
     @Override
-    public List<Field> fields() {
+    public List<OrIsNullField> fields() {
         return element.getEnclosedElements().stream()
                 .filter(e -> e.getKind().isField())
-                .map(e -> new AnnotatedField(e))
+                .map(AnnotatedOrIsNullField::new)
                 .collect(Collectors.toList());
     }
 }

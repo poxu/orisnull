@@ -1,9 +1,7 @@
 package com.evilcorp.orisnull.generator.template;
 
-import com.evilcorp.orisnull.generator.template.FreeKlass;
-import com.evilcorp.orisnull.generator.template.FreeMethod;
-import com.evilcorp.orisnull.model.BetterClass;
-import com.evilcorp.orisnull.model.SearchMethod;
+import com.evilcorp.orisnull.model.OrIsNullClass;
+import com.evilcorp.orisnull.model.OrIsNullSearchMethod;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -21,12 +19,12 @@ import java.util.stream.Collectors;
 
 public class TemplateSearchServiceGenerator {
 
-    private final BetterClass orIsNullSearchInterface;
-    private final List<SearchMethod> methods;
+    private final OrIsNullClass orIsNullSearchInterface;
+    private final List<OrIsNullSearchMethod> methods;
 
     public TemplateSearchServiceGenerator(
-            BetterClass orIsNullSearchInterface
-            , List<SearchMethod> methods
+            OrIsNullClass orIsNullSearchInterface
+            , List<OrIsNullSearchMethod> methods
     ) {
         this.orIsNullSearchInterface = orIsNullSearchInterface;
         this.methods = methods;

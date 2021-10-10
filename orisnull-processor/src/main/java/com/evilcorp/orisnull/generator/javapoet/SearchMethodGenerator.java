@@ -1,8 +1,7 @@
 package com.evilcorp.orisnull.generator.javapoet;
 
 import com.evilcorp.orisnull.domain.BetterQueryParsingReplace;
-import com.evilcorp.orisnull.model.Field;
-import com.evilcorp.orisnull.model.SearchMethod;
+import com.evilcorp.orisnull.model.OrIsNullSearchMethod;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -14,9 +13,9 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class SearchMethodGenerator {
-    private final SearchMethod method;
+    private final OrIsNullSearchMethod method;
 
-    public SearchMethodGenerator(SearchMethod method) {
+    public SearchMethodGenerator(OrIsNullSearchMethod method) {
         this.method = method;
     }
 

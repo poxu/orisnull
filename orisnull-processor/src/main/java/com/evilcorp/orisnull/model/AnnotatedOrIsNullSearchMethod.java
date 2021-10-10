@@ -7,11 +7,11 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
-public class AnnotatedSearchMethod implements SearchMethod {
+public class AnnotatedOrIsNullSearchMethod implements OrIsNullSearchMethod {
     private final Element queryMethod;
     private final Types typeUtils;
 
-    public AnnotatedSearchMethod(Element queryMethod, final Types typeUtils) {
+    public AnnotatedOrIsNullSearchMethod(Element queryMethod, final Types typeUtils) {
         this.queryMethod = queryMethod;
         this.typeUtils = typeUtils;
     }
@@ -20,14 +20,14 @@ public class AnnotatedSearchMethod implements SearchMethod {
         return queryMethod.getSimpleName().toString();
     }
 
-    public BetterClass entity() {
+    public OrIsNullClass entity() {
         return new AnnotatedEntity(queryMethod);
     }
 
-    public BetterClass filter() {
+    public OrIsNullClass filter() {
         final var queryMethod = (ExecutableType) this.queryMethod.asType();
         final TypeMirror queryMethodParameter = queryMethod.getParameterTypes().iterator().next();
-        return new AnnotatedBetterClass(typeUtils.asElement(queryMethodParameter));
+        return new AnnotatedOrIsNullClass(typeUtils.asElement(queryMethodParameter));
     }
 
     public String query() {

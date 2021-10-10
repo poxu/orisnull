@@ -1,12 +1,12 @@
 package com.evilcorp.orisnull.model;
 
-public class SimpleSearchMethod implements SearchMethod {
-    private final BetterClass filter;
-    private final BetterClass entity;
+public class SimpleOrIsNullSearchMethod implements OrIsNullSearchMethod {
+    private final OrIsNullClass filter;
+    private final OrIsNullClass entity;
     private final String name;
     private final String query;
 
-    public SimpleSearchMethod(BetterClass filter, BetterClass entity, String name, String query) {
+    public SimpleOrIsNullSearchMethod(OrIsNullClass filter, OrIsNullClass entity, String name, String query) {
         this.filter = filter;
         this.entity = entity;
         this.name = name;
@@ -19,12 +19,12 @@ public class SimpleSearchMethod implements SearchMethod {
     }
 
     @Override
-    public BetterClass entity() {
+    public OrIsNullClass entity() {
         return entity;
     }
 
     @Override
-    public BetterClass filter() {
+    public OrIsNullClass filter() {
         return filter;
     }
 

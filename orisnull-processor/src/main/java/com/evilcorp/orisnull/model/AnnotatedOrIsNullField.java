@@ -2,10 +2,10 @@ package com.evilcorp.orisnull.model;
 
 import javax.lang.model.element.Element;
 
-public class AnnotatedField implements Field {
+public class AnnotatedOrIsNullField implements OrIsNullField {
     private final Element element;
 
-    public AnnotatedField(Element element) {
+    public AnnotatedOrIsNullField(Element element) {
         this.element = element;
     }
 
@@ -19,14 +19,14 @@ public class AnnotatedField implements Field {
         return element.asType().toString();
     }
 
-    public BetterClass betterClass() {
+    public OrIsNullClass betterClass() {
         if (element.asType().getKind().isPrimitive()) {
             return null;
         }
-        return new AnnotatedBetterClass(element);
+        return new AnnotatedOrIsNullClass(element);
     }
 
-    public BetterClass getKlassType() {
+    public OrIsNullClass getKlassType() {
         return betterClass();
     }
 }

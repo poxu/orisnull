@@ -1,10 +1,10 @@
 package com.evilcorp.orisnull.model;
 
-public class SimpleField implements Field {
+public class SimpleOrIsNullField implements OrIsNullField {
     private final String name;
     private final String type;
 
-    public SimpleField(String name, String type) {
+    public SimpleOrIsNullField(String name, String type) {
         this.name = name;
         this.type = type;
     }
@@ -20,7 +20,7 @@ public class SimpleField implements Field {
     }
 
     @Override
-    public BetterClass betterClass() {
+    public OrIsNullClass betterClass() {
         return null;
     }
 }

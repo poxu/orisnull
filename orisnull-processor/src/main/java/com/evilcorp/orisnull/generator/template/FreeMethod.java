@@ -1,6 +1,6 @@
 package com.evilcorp.orisnull.generator.template;
 
-import com.evilcorp.orisnull.model.SearchMethod;
+import com.evilcorp.orisnull.model.OrIsNullSearchMethod;
 
 public class FreeMethod {
     private FreeKlass filter;
@@ -8,7 +8,7 @@ public class FreeMethod {
     private String name;
     private String query;
 
-    public FreeMethod(SearchMethod m) {
+    public FreeMethod(OrIsNullSearchMethod m) {
         filter = new FreeKlass(m.filter());
         entity = new FreeKlass(m.entity());
         name = m.name();

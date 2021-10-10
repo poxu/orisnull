@@ -1,7 +1,7 @@
 package com.evilcorp.orisnull.generator.javapoet;
 
-import com.evilcorp.orisnull.model.BetterClass;
-import com.evilcorp.orisnull.model.SearchMethod;
+import com.evilcorp.orisnull.model.OrIsNullClass;
+import com.evilcorp.orisnull.model.OrIsNullSearchMethod;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -14,12 +14,12 @@ import java.util.List;
 
 public class SearchServiceGenerator {
 
-    private final BetterClass orIsNullSearchInterface;
-    private final List<SearchMethod> methods;
+    private final OrIsNullClass orIsNullSearchInterface;
+    private final List<OrIsNullSearchMethod> methods;
 
     public SearchServiceGenerator(
-             BetterClass orIsNullSearchInterface
-            , List<SearchMethod> methods
+             OrIsNullClass orIsNullSearchInterface
+            , List<OrIsNullSearchMethod> methods
     ) {
         this.orIsNullSearchInterface = orIsNullSearchInterface;
         this.methods = methods;
@@ -34,7 +34,7 @@ public class SearchServiceGenerator {
                 .addAnnotation(ClassName.get("org.springframework.beans.factory.annotation", "Autowired"))
                 .build());
 
-        for (SearchMethod method : methods) {
+        for (OrIsNullSearchMethod method : methods) {
             final var searchMethodGenerator = new SearchMethodGenerator(method);
             spec.addMethod(searchMethodGenerator.searchQueryMethod());
         }

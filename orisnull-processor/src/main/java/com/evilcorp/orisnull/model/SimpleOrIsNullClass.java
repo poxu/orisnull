@@ -2,11 +2,11 @@ package com.evilcorp.orisnull.model;
 
 import java.util.List;
 
-public class SimpleBetterClass implements BetterClass {
+public class SimpleOrIsNullClass implements OrIsNullClass {
     private final String name;
-    private final List<Field> fields;
+    private final List<OrIsNullField> fields;
 
-    public SimpleBetterClass(String name, List<Field> fields) {
+    public SimpleOrIsNullClass(String name, List<OrIsNullField> fields) {
         this.name = name;
         this.fields = fields;
     }
@@ -17,7 +17,7 @@ public class SimpleBetterClass implements BetterClass {
     }
 
     @Override
-    public List<Field> fields() {
+    public List<OrIsNullField> fields() {
         return fields;
     }
 }

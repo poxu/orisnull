@@ -1,11 +1,10 @@
 package com.evilcorp.orisnull.processor;
 
 import com.evilcorp.orisnull.generator.template.TemplateSearchServiceGenerator;
-import com.evilcorp.orisnull.model.AnnotatedBetterClass;
-import com.evilcorp.orisnull.model.AnnotatedSearchMethod;
-import com.evilcorp.orisnull.model.BetterClass;
-import com.evilcorp.orisnull.model.SearchMethod;
-import com.evilcorp.orisnull.model.SimpleSearchMethod;
+import com.evilcorp.orisnull.model.AnnotatedOrIsNullClass;
+import com.evilcorp.orisnull.model.AnnotatedOrIsNullSearchMethod;
+import com.evilcorp.orisnull.model.OrIsNullClass;
+import com.evilcorp.orisnull.model.OrIsNullSearchMethod;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -39,13 +38,13 @@ public class OrIsNullProcessor extends AbstractProcessor {
             Set<? extends Element> annotatedInterfaces
                     = roundEnv.getElementsAnnotatedWith(orIsNullAnnotation);
             for (Element orIsNullRepository : annotatedInterfaces) {
-                BetterClass orIsNullInterface = new AnnotatedBetterClass(orIsNullRepository);
+                OrIsNullClass orIsNullInterface = new AnnotatedOrIsNullClass(orIsNullRepository);
 
-                final List<SearchMethod> methods = orIsNullRepository
+                final List<OrIsNullSearchMethod> methods = orIsNullRepository
                         .getEnclosedElements()
                         .stream()
                         .filter(e -> e.getKind() == ElementKind.METHOD)
-                        .map(queryMethodCandidate -> new AnnotatedSearchMethod(
+                        .map(queryMethodCandidate -> new AnnotatedOrIsNullSearchMethod(
                                 queryMethodCandidate, processingEnv.getTypeUtils()
                         ))
                         .collect(Collectors.toList());
