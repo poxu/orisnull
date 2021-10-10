@@ -1,6 +1,7 @@
 package ${klass.packageName};
 
 import com.evilcorp.orisnull.domain.BetterQueryParsingReplace;
+import com.evilcorp.orisnull.annotation.OrIsNullQuery;
 <#list methods as method>
 import ${method.entity.fullname};
 import ${method.filter.fullname};
@@ -25,6 +26,7 @@ public class ${klass.shortname}Impl implements ${klass.shortname} {
     @Autowired
     EntityManagerFactory emf;
 <#list methods as method>
+
     @Override
     public List<${method.entity.shortname}> ${method.name}(${method.filter.shortname} filter) {
         if (filter.isEmpty()) {
@@ -35,7 +37,14 @@ public class ${klass.shortname}Impl implements ${klass.shortname} {
         params.put("${field.name}", filter.${field.getter}());
     </#list>
         final var transformer = new BetterQueryParsingReplace(params);
-        final var sql = transformer.cleanQuery("${method.alignedQuery}");
+        String rawSql;
+        try {
+            rawSql = ${klass.shortname}.class.getMethod("${method.name}", ${method.filter.shortname}.class)
+                .getAnnotation(OrIsNullQuery.class).value();
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        final var sql = transformer.cleanQuery(rawSql);
         final var em = emf.createEntityManager();
         final var query = em.createQuery(sql, ${method.entity.shortname}.class);
         params.forEach(query::setParameter);
