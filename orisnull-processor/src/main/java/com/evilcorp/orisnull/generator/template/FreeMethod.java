@@ -3,29 +3,17 @@ package com.evilcorp.orisnull.generator.template;
 import com.evilcorp.orisnull.model.OrIsNullSearchMethod;
 
 public class FreeMethod {
-    private FreeKlass filter;
-    private FreeKlass entity;
     OrIsNullSearchMethod method;
     public FreeMethod(OrIsNullSearchMethod method) {
         this.method = method;
-        filter = new FreeKlass(method.filter());
-        entity = new FreeKlass(method.entity());
     }
 
     public FreeKlass getFilter() {
-        return filter;
-    }
-
-    public void setFilter(FreeKlass filter) {
-        this.filter = filter;
+        return new FreeKlass(method.filter());
     }
 
     public FreeKlass getEntity() {
-        return entity;
-    }
-
-    public void setEntity(FreeKlass entity) {
-        this.entity = entity;
+        return new FreeKlass(method.entity());
     }
 
     public String getName() {
