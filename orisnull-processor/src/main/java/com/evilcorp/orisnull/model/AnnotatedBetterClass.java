@@ -6,14 +6,9 @@ import java.util.stream.Collectors;
 
 public class AnnotatedBetterClass implements BetterClass {
     private final Element element;
-    private final List<Field> fields;
 
     public AnnotatedBetterClass(Element element) {
         this.element = element;
-        fields = element.getEnclosedElements().stream()
-                .filter(e -> e.getKind().isField())
-                .map(e -> new AnnotatedField(e))
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -23,6 +18,9 @@ public class AnnotatedBetterClass implements BetterClass {
 
     @Override
     public List<Field> fields() {
-        return fields;
+        return element.getEnclosedElements().stream()
+                .filter(e -> e.getKind().isField())
+                .map(e -> new AnnotatedField(e))
+                .collect(Collectors.toList());
     }
 }
