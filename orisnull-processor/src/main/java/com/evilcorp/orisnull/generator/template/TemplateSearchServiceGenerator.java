@@ -21,6 +21,8 @@ public class TemplateSearchServiceGenerator {
 
     private final OrIsNullClass orIsNullSearchInterface;
     private final List<OrIsNullSearchMethod> methods;
+    private Configuration cfg;
+    private Template temp;
 
     public TemplateSearchServiceGenerator(
             OrIsNullClass orIsNullSearchInterface
@@ -28,11 +30,7 @@ public class TemplateSearchServiceGenerator {
     ) {
         this.orIsNullSearchInterface = orIsNullSearchInterface;
         this.methods = methods;
-    }
-
-
-    public void toFiler(Filer filer) {
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
+        cfg = new Configuration(Configuration.VERSION_2_3_23);
         try {
             cfg.setClassForTemplateLoading(this.getClass(), "/");
 
@@ -48,29 +46,26 @@ public class TemplateSearchServiceGenerator {
             cfg.setLogTemplateExceptions(false);
 
 
-            Template temp = cfg.getTemplate("service.ftpl");
+            temp = cfg.getTemplate("service.ftpl");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void toFiler(Filer filer) {
             Map<String, Object> root = new HashMap<>();
             root.put("packageName", orIsNullSearchInterface.packageName());
             root.put("klass", new FreeKlass(orIsNullSearchInterface));
             root.put("methods", methods.stream().map(FreeMethod::new)
                     .collect(Collectors.toList()));
-//            Writer out = new OutputStreamWriter(System.out);
+        try {
             final JavaFileObject sourceFile = filer.createSourceFile(orIsNullSearchInterface.name() + "Impl");
-//            Writer out = new OutputStreamWriter(System.out);
             Writer out = new OutputStreamWriter(sourceFile.openOutputStream());
-
 
             temp.process(root, out);
             out.close();
-        } catch (IOException | TemplateException e) {
-            e.printStackTrace();
+        } catch (TemplateException | IOException e) {
+            throw new RuntimeException(e);
         }
-
-// Wrap unchecked exceptions thrown during template processing into TemplateException-s:
-//        cfg.wrap
-
-// Do not fall back to higher scopes when reading a null loop variable:
-//        cfg.setFallbackOnNullLoopVariable(false);
-
     }
 }
